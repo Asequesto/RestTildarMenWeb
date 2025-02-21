@@ -58,5 +58,4 @@ public class UserService {
         String email = authentication.getName();
         return userRepository.findByEmail(email);
     }
-
 }

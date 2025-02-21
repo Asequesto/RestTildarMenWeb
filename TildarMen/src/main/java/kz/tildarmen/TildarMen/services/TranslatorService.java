@@ -54,4 +54,11 @@ public class TranslatorService {
         translator.setLocation(request.getLocation());
         return translatorRepository.save(translator);
     }
+
+    public void deleteTranslator(Long id) {
+        Translator translator = getTranslatorById(id);
+        translatorRepository.delete(translator);
+
+        translatorRepository.delete(translator);
+    }
 }

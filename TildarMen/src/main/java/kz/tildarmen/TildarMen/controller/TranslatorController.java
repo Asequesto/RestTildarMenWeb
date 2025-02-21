@@ -7,6 +7,7 @@ import kz.tildarmen.TildarMen.services.TranslatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -24,6 +25,12 @@ public class TranslatorController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Oops", e.getMessage()));
         }
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<ApiResponse> deleteTranslator(@PathVariable Long id){
+        translatorService.deleteTranslator(id);
+        return ResponseEntity.ok(new ApiResponse("Successfully deleted translator", null));
     }
 
 }

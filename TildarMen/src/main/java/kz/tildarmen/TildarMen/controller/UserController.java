@@ -42,7 +42,7 @@ public class UserController {
         }
         UserDto userDto = userMapper.toUserDto(user);
         if(user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("User not found, Fail!", null));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("User Already Exists", null));
         }
         System.out.println("DEBUG UserDto: " + userDto);
         return ResponseEntity.ok(new ApiResponse("Success", userDto));

@@ -3,6 +3,7 @@ package kz.tildarmen.TildarMen.security.config;
 import kz.tildarmen.TildarMen.security.TildarMenUserDetailsService;
 import kz.tildarmen.TildarMen.security.jwt.AuthTokenFilter;
 import kz.tildarmen.TildarMen.security.jwt.JwtAuthEntryPoint;
+import kz.tildarmen.TildarMen.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ import java.util.List;
 public class TildarMenConfig {
 
     private final TildarMenUserDetailsService userDetailsService;
+    private final JwtUtils jwtUtils;
     private final JwtAuthEntryPoint authEntryPoint;
 
     private static final List<String> SECURED_URLS =
@@ -44,7 +46,7 @@ public class TildarMenConfig {
 
     @Bean
     public AuthTokenFilter authTokenFilter() {
-        return new AuthTokenFilter();
+        return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
 
     @Bean
