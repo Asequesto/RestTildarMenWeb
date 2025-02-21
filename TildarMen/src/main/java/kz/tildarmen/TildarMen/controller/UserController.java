@@ -5,6 +5,7 @@ import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
+import kz.tildarmen.TildarMen.services.TranslatorService;
 import kz.tildarmen.TildarMen.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final TranslatorService translatorService;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
@@ -32,7 +34,12 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addUser(@RequestBody CreateUserRequest request) {
-        User user = userService.createUser(request);
+        User user;
+        if (request.getRole().equalsIgnoreCase("translator")) {
+            user = translatorService.createTranslator(request);
+        } else {
+            user = userService.createUser(request);
+        }
         UserDto userDto = userMapper.toUserDto(user);
         if(user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("User not found, Fail!", null));

@@ -1,31 +1,38 @@
 package kz.tildarmen.TildarMen.model;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
-@DiscriminatorValue("TRANSLATOR")
+@Table(name = "translators")
 public class Translator extends User {
+
+    private String introduction;
+    private String videoGreeting;
 
     @ElementCollection
     private List<String> languages;
 
     @ElementCollection
-    private List<String> certificates;
+    private List<String> serviceTypes;
 
     @ElementCollection
-    private List<String> experience;
+    private List<String> specializations;
 
-    private Double rating = 0.0; // Default rating
+    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkExperience> workExperiences;
 
+    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects;
 
+    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Education> educations;
 
-    public void updateProfile(List<String> languages, List<String> certificates, List<String> experience) {
-        this.languages = languages;
-        this.certificates = certificates;
-        this.experience = experience;
-    }
+    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Certificate> certificates;
+
 }

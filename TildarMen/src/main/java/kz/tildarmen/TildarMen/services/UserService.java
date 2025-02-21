@@ -7,6 +7,8 @@ import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.UserRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class UserService {
     }
 
     public User createUser(CreateUserRequest request) {
-        User checkUser = userRepository.findByEmailOrPhoneNumber(request.getEmail(), request.getPhoneNumber());
+        User checkUser = findUserByUserName(request.getEmail(), request.getPhoneNumber()    );
         if(checkUser != null){
             return null;
         }
@@ -37,6 +39,24 @@ public class UserService {
 
         return userRepository.save(user);
 
+    }
+
+    public User findUserByUserName(String email, String phoneNumber){
+        return userRepository.findByEmailOrPhoneNumber(email, phoneNumber);
+    }
+
+    public User findUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    public User findUserByPhoneNumber(String phoneNumber){
+        return userRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email);
     }
 
 }
