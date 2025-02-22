@@ -2,7 +2,9 @@ package kz.tildarmen.TildarMen.services;
 
 
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.enums.Role;
+import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.UserRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
@@ -19,12 +21,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public User getUserById(Long id){
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDto getUserById(Long id){
+
+        return userMapper.toUserDto(userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found")));
     }
 
-    public User createUser(CreateUserRequest request) {
+    public UserDto createUser(CreateUserRequest request) {
         User checkUser = findUserByUserName(request.getEmail(), request.getPhoneNumber()    );
         if(checkUser != null){
             return null;
@@ -37,7 +42,7 @@ public class UserService {
         user.setLastName(request.getLastName());
         user.setRole(Role.valueOf(request.getRole().toUpperCase()));
 
-        return userRepository.save(user);
+        return userMapper.toUserDto(userRepository.save(user));
 
     }
 

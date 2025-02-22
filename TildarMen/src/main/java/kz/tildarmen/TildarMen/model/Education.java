@@ -1,6 +1,7 @@
 package kz.tildarmen.TildarMen.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Education {
     private Long graduationYear;
     private String degreeFileUrl;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "translator_id")
     private Translator translator;

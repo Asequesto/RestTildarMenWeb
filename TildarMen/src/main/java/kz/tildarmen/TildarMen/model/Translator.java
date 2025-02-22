@@ -1,6 +1,7 @@
 package kz.tildarmen.TildarMen.model;
 
 import jakarta.persistence.*;
+import kz.tildarmen.TildarMen.enums.AvailabilityStatus;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
@@ -13,6 +14,10 @@ public class Translator extends User {
 
     private String introduction;
     private String videoGreeting;
+    private String professionalTitle;
+
+    @Enumerated(EnumType.STRING)
+    private AvailabilityStatus availability;
 
     @ElementCollection
     private List<String> languages;

@@ -1,11 +1,15 @@
 package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.enums.Role;
+import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
+import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.Translator;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.TranslatorRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
+import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
 import kz.tildarmen.TildarMen.requests.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +23,7 @@ public class TranslatorService {
     private final TranslatorRepository translatorRepository;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
 
     public Translator getTranslatorById(Long id) {
@@ -26,7 +31,7 @@ public class TranslatorService {
                 .orElseThrow(() -> new RuntimeException("Translator not found with ID: " + id));
     }
 
-    public User createTranslator(CreateUserRequest request) {
+    public UserDto createTranslator(CreateUserRequest request) {
         User checkUser =  userService.findUserByUserName(request.getEmail(), request.getPhoneNumber());
         if(checkUser == null) {
             Translator translator = new Translator();
@@ -36,13 +41,13 @@ public class TranslatorService {
             translator.setLastName(request.getLastName());
             translator.setPassword(passwordEncoder.encode(request.getPassword()));
             translator.setRole(Role.valueOf(request.getRole().toUpperCase()));
-            return translatorRepository.save(translator);
+            return userMapper.toUserDto(translatorRepository.save(translator));
         }
         return null;
 
     }
 
-    public Translator updateTranslator(UpdateUserRequest request, Long id) {
+    public UserDto updateTranslatorAccountSettings(UpdateUserRequest request, Long id) {
         Translator translator = getTranslatorById(id);
         User checkUser = userService.findUserByPhoneNumber(request.getPhoneNumber());
         if (checkUser != null && !checkUser.getId().equals(translator.getId())) {
@@ -52,13 +57,23 @@ public class TranslatorService {
         translator.setFirstName(request.getFirstName());
         translator.setLastName(request.getLastName());
         translator.setLocation(request.getLocation());
-        return translatorRepository.save(translator);
+        return userMapper.toUserDto(translatorRepository.save(translator));
     }
 
     public void deleteTranslator(Long id) {
         Translator translator = getTranslatorById(id);
         translatorRepository.delete(translator);
+    }
 
-        translatorRepository.delete(translator);
+    public void updatePassword(Long id, UpdatePasswordRequest request) {
+        Translator translator = getTranslatorById(id);
+        if (!passwordEncoder.matches(request.getOldPassword(), translator.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+        if(!request.getPassword().equals(request.getRepeatPassword())) {
+            throw new IllegalArgumentException("Passwords does not match");
+        }
+        translator.setPassword(passwordEncoder.encode(request.getPassword()));
+        translatorRepository.save(translator);
     }
 }
