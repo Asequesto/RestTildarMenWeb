@@ -2,6 +2,8 @@ package kz.tildarmen.TildarMen.controller;
 
 import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
+import kz.tildarmen.TildarMen.requests.TranslatorProfileRequest;
+import kz.tildarmen.TildarMen.requests.UpdateIntroRequest;
 import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
 import kz.tildarmen.TildarMen.requests.UpdateUserRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
@@ -94,6 +96,60 @@ public class TranslatorController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Oops", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<ApiResponse> updateTranslatorProfile(@PathVariable Long id, @RequestBody TranslatorProfileRequest request){
+        try {
+            TranslatorDto translator = translatorService.updateTranslatorProfile(id, request);
+            return ResponseEntity.ok(new ApiResponse("Successfully updated translator", translator));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Oops", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/intro")
+    public ResponseEntity<ApiResponse> updateTranslatorIntro(@PathVariable Long id,
+                                                             @RequestBody UpdateIntroRequest intro){
+        try {
+            TranslatorDto translator = translatorService.addIntroduction(id, intro);
+            return ResponseEntity.ok(new ApiResponse("Successfully updated language", translator));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/language")
+    public ResponseEntity<ApiResponse> updateTranslatorLanguage(@PathVariable Long id, @RequestParam String language){
+        try {
+            TranslatorDto translator = translatorService.addLanguage(id, language);
+            return ResponseEntity.ok(new ApiResponse("Successfully updated language", translator));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/service")
+    public ResponseEntity<ApiResponse> updateTranslatorService(@PathVariable Long id,
+                                                               @RequestParam String service){
+        try {
+            TranslatorDto translator = translatorService.addService(id, service);
+            return ResponseEntity.ok(new ApiResponse("Successfully updated service", translator));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/specialization")
+    public ResponseEntity<ApiResponse> updateTranslatorSpecialization(@PathVariable Long id,
+                                                                      @RequestParam String specialization){
+        try {
+            TranslatorDto translator = translatorService.addSpecialization(id, specialization);
+            return ResponseEntity.ok(new ApiResponse("Successfully updated specialization", translator));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
     }
 

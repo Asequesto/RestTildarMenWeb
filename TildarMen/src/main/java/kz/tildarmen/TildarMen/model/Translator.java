@@ -5,6 +5,7 @@ import kz.tildarmen.TildarMen.enums.AvailabilityStatus;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,18 +16,34 @@ public class Translator extends User {
     private String introduction;
     private String videoGreeting;
     private String professionalTitle;
+    private String basedIn;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availability;
 
-    @ElementCollection
-    private List<String> languages;
+    @ManyToMany
+    @JoinTable(
+            name = "translator_languages",
+            joinColumns = @JoinColumn(name = "translator_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private Set<Language> languages;
 
-    @ElementCollection
-    private List<String> serviceTypes;
+    @ManyToMany
+    @JoinTable(
+            name = "translator_service_types",
+            joinColumns = @JoinColumn(name = "translator_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<ServiceTypes> serviceTypes;
 
-    @ElementCollection
-    private List<String> specializations;
+    @ManyToMany
+    @JoinTable(
+            name = "translator_specializations",
+            joinColumns = @JoinColumn(name = "translator_id"),
+            inverseJoinColumns = @JoinColumn(name = "specialization_id")
+    )
+    private Set<Specialization> specializations;
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkExperience> workExperiences;
