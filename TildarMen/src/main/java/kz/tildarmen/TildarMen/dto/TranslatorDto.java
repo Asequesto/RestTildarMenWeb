@@ -12,14 +12,14 @@ public class TranslatorDto {
 
 
     private String introduction;
-    private String videoGreeting;
     private String professionalTitle;
-    private String basedIn;
+    private String location;
     private AvailabilityStatus availability;
     private Set<Language> languages;
     private Set<ServiceTypes> serviceTypes;
     private Set<Specialization> specializations;
-    private List<ImageDto> profileImage;
+    private VideoDto videoGreeting;
+    private List<ImageDto> images;
     private List<WorkExperienceDto> workExperiences;
     private List<Project> projects;
     private List<Education> educations;

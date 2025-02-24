@@ -17,9 +17,8 @@ public class Translator extends User {
 
 
     private String introduction;
-    private String videoGreeting;
     private String professionalTitle;
-    private String basedIn;
+    private String location;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availability;
@@ -47,6 +46,9 @@ public class Translator extends User {
             inverseJoinColumns = @JoinColumn(name = "specialization_id")
     )
     private Set<Specialization> specializations;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Video videoGreeting;
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();

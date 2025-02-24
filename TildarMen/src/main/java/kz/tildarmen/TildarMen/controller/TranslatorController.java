@@ -35,6 +35,7 @@ public class TranslatorController {
     private final EducationService educationService;
     private final CertificateService certificateService;
     private final ImageService imageService;
+    private final VideoService videoService;
 
     @GetMapping("/{id}/settings")
     public ResponseEntity<ApiResponse> getTranslatorSettingsById(@PathVariable Long id) {
@@ -57,12 +58,27 @@ public class TranslatorController {
     }
 
     @GetMapping("/file/download/{imageId}")
-    public ResponseEntity<Resource> getTranslatorProfileImage(@PathVariable Long imageId) throws SQLException {
+    public ResponseEntity<Resource> downloadTranslatorFile(@PathVariable Long imageId) throws SQLException {
             Image image = imageService.getImageById(imageId);
             ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int)image.getImage().length()));
             return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
                     .body(resource);
+
+    }
+
+    @GetMapping("/video/download/{videoId}")
+    public ResponseEntity<?> downloadTranslatorVideo(@PathVariable Long videoId) throws IOException {
+        try {
+            byte[] videoData = videoService.downloadVideo(videoId);
+            VideoDto video = videoService.getVideo(videoId);
+            String mediaType = videoService.getMediaType(video.getFileName());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.valueOf(mediaType))
+                    .body(videoData);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
 
     }
 
@@ -155,6 +171,18 @@ public class TranslatorController {
             return ResponseEntity.ok(new ApiResponse("Successfully updated language", translator));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/video")
+    public ResponseEntity<ApiResponse> uploadVideo(@PathVariable Long id,
+                                                     @RequestParam MultipartFile file) {
+        try {
+            VideoDto video = videoService.uploadVideo(id, file);
+            return ResponseEntity.ok(new ApiResponse("Success", video));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new ApiResponse("Error", e.getMessage()));
         }
     }
 
