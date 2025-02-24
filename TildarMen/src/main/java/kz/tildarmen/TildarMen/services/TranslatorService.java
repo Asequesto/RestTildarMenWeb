@@ -65,7 +65,7 @@ public class TranslatorService {
 
     public TranslatorDto updateTranslatorProfile(Long id, TranslatorProfileRequest request) {
         Translator translator = getTranslatorById(id);
-        translator.setProfessionalTitle(request.getProfessionalTitle());
+        translator.setProfessionalTitle(request.getTitle());
         translator.setBasedIn(request.getBasedIn());
         translator.setAvailability(AvailabilityStatus.valueOf(request.getAvailability().toUpperCase()));
         return translatorMapper.toDto(translatorRepository.save(translator));

@@ -10,6 +10,7 @@ import java.util.Set;
 @Data
 public class TranslatorDto {
 
+
     private String introduction;
     private String videoGreeting;
     private String professionalTitle;
@@ -18,6 +19,7 @@ public class TranslatorDto {
     private Set<Language> languages;
     private Set<ServiceTypes> serviceTypes;
     private Set<Specialization> specializations;
+    private List<ImageDto> profileImage;
     private List<WorkExperienceDto> workExperiences;
     private List<Project> projects;
     private List<Education> educations;

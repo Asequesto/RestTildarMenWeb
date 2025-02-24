@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class TranslatorProfileRequest {
 
-    private String professionalTitle;
+    private String title;
     private String basedIn;
     private String availability;
 }

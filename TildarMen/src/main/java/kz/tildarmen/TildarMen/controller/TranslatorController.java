@@ -1,7 +1,9 @@
 package kz.tildarmen.TildarMen.controller;
 
 import kz.tildarmen.TildarMen.dto.*;
+import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
+import kz.tildarmen.TildarMen.model.Image;
 import kz.tildarmen.TildarMen.requests.TranslatorProfileRequest;
 import kz.tildarmen.TildarMen.requests.UpdateIntroRequest;
 import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
@@ -9,9 +11,17 @@ import kz.tildarmen.TildarMen.requests.UpdateUserRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,6 +34,7 @@ public class TranslatorController {
     private final TranslatorMapper translatorMapper;
     private final EducationService educationService;
     private final CertificateService certificateService;
+    private final ImageService imageService;
 
     @GetMapping("/{id}/settings")
     public ResponseEntity<ApiResponse> getTranslatorSettingsById(@PathVariable Long id) {
@@ -44,6 +55,17 @@ public class TranslatorController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
     }
+
+    @GetMapping("/file/download/{imageId}")
+    public ResponseEntity<Resource> getTranslatorProfileImage(@PathVariable Long imageId) throws SQLException {
+            Image image = imageService.getImageById(imageId);
+            ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int)image.getImage().length()));
+            return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
+                    .body(resource);
+
+    }
+
     @PostMapping("/{id}/work")
     public ResponseEntity<ApiResponse> createWorkExperience(@PathVariable Long id,
                                                             @RequestBody WorkExperienceDto request){
@@ -72,6 +94,21 @@ public class TranslatorController {
             return ResponseEntity.ok(new ApiResponse("Successfully created certificate", certificate));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/profileImage")
+    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long id,
+                                                          @RequestParam MultipartFile file) {
+
+        try {
+            ImageDto profileImage = imageService.uploadFile(id, file, ImageUsageType.PROFILE_IMAGE);
+            return ResponseEntity.ok(new ApiResponse("Success", profileImage));
+        } catch (IOException | SQLException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new ApiResponse("Error", e.getMessage()));
         }
     }
 
@@ -165,6 +202,22 @@ public class TranslatorController {
         }
     }
 
+    @PutMapping("/{id}/project")
+    public ResponseEntity<ApiResponse> uploadProject(@PathVariable Long id,
+                                                          @RequestParam MultipartFile file) {
+
+        try {
+            ImageDto project = imageService.uploadFile(id, file, ImageUsageType.PROJECT_FILE);
+            return ResponseEntity.ok(new ApiResponse("Success", project));
+        } catch (IOException | SQLException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+
     @PutMapping("/{id}/education/{educationId}")
     public ResponseEntity<ApiResponse> updateEducation(@PathVariable Long id,
                                                        @PathVariable Long educationId,
@@ -177,6 +230,21 @@ public class TranslatorController {
         }
     }
 
+    @PutMapping("/{id}/degree")
+    public ResponseEntity<ApiResponse> uploadDegree(@PathVariable Long id,
+                                                     @RequestParam MultipartFile file) {
+
+        try {
+            ImageDto degree = imageService.uploadFile(id, file, ImageUsageType.DEGREE_FILE);
+            return ResponseEntity.ok(new ApiResponse("Success", degree));
+        } catch (IOException | SQLException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
     @PutMapping("/{id}/certificate/{certificateId}")
     public ResponseEntity<ApiResponse> updateCertificate(@PathVariable Long id,
                                                          @PathVariable Long certificateId,
@@ -186,6 +254,21 @@ public class TranslatorController {
             return ResponseEntity.ok(new ApiResponse("Successfully updated certificate", certificate));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/certificate")
+    public ResponseEntity<ApiResponse> uploadCertificate(@PathVariable Long id,
+                                                    @RequestParam MultipartFile file) {
+
+        try {
+            ImageDto certificate = imageService.uploadFile(id, file, ImageUsageType.CERTIFICATE_FILE);
+            return ResponseEntity.ok(new ApiResponse("Success", certificate));
+        } catch (IOException | SQLException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new ApiResponse("Error", e.getMessage()));
         }
     }
 

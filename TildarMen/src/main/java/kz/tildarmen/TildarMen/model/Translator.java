@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import kz.tildarmen.TildarMen.enums.AvailabilityStatus;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "translators")
 public class Translator extends User {
+
 
     private String introduction;
     private String videoGreeting;
@@ -44,6 +47,9 @@ public class Translator extends User {
             inverseJoinColumns = @JoinColumn(name = "specialization_id")
     )
     private Set<Specialization> specializations;
+
+    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkExperience> workExperiences;
