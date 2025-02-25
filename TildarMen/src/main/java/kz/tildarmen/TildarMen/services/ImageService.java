@@ -28,6 +28,21 @@ public class ImageService {
             throws IOException, SQLException {
         Translator translator = translatorService.getTranslatorById(translatorId);
 
+        if(imageRepository.existsByTranslatorAndUsageType(translator, usageType)){
+            Image image = imageRepository.findByTranslator(translator);
+            image.setUsageType(usageType);
+            image.setImage(new SerialBlob(file.getBytes()));
+            image.setFileName(file.getOriginalFilename());
+            image.setFileType(file.getContentType());
+            String patternUrl = "/translator/file/download/";
+            imageRepository.save(image);
+
+            image.setDownloadUrl(patternUrl + image.getId());
+            imageRepository.save(image);
+            return imageMapper.toDto(image);
+        }
+
+
         Image profileImage = new Image();
         profileImage.setTranslator(translator);
         profileImage.setImage(new SerialBlob(file.getBytes()));

@@ -16,7 +16,6 @@ public class Certificate {
 
     private String title;
     private Long year;
-    private String certificateFileUrl;
 
     @ManyToOne
     @JoinColumn(name = "translator_id")

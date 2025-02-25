@@ -13,15 +13,14 @@ public class TranslatorDto {
 
     private String introduction;
     private String professionalTitle;
-    private String location;
     private AvailabilityStatus availability;
     private Set<Language> languages;
     private Set<ServiceTypes> serviceTypes;
     private Set<Specialization> specializations;
+    private LocationDto location;
     private VideoDto videoGreeting;
     private List<ImageDto> images;
     private List<WorkExperienceDto> workExperiences;
-    private List<Project> projects;
     private List<Education> educations;
     private List<CertificateDto> certificates;
 

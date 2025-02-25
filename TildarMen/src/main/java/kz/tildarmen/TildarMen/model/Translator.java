@@ -16,9 +16,10 @@ import java.util.Set;
 public class Translator extends User {
 
 
+    @Column(columnDefinition = "TEXT")
     private String introduction;
+
     private String professionalTitle;
-    private String location;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availability;
@@ -47,6 +48,9 @@ public class Translator extends User {
     )
     private Set<Specialization> specializations;
 
+    @ManyToOne
+    private Location location;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Video videoGreeting;
 
@@ -55,9 +59,6 @@ public class Translator extends User {
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkExperience> workExperiences;
-
-    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Project> projects;
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Education> educations;

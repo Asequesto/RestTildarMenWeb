@@ -27,6 +27,7 @@ public class TranslatorService {
     private final LanguageService languageService;
     private final ServiceTypesService serviceTypesService;
     private final SpecializationService specializationService;
+    private final LocationService locationService;
 
 
     public Translator getTranslatorById(Long id) {
@@ -56,17 +57,19 @@ public class TranslatorService {
         if (checkUser != null && !checkUser.getId().equals(translator.getId())) {
             throw new RuntimeException("Phone number is already in use!");
         }
+        Location location = locationService.getLocationByName(request.getLocation());
         translator.setPhoneNumber(request.getPhoneNumber());
         translator.setFirstName(request.getFirstName());
         translator.setLastName(request.getLastName());
-        translator.setLocation(request.getLocation());
+        translator.setLocation(location);
         return userMapper.toUserDto(translatorRepository.save(translator));
     }
 
     public TranslatorDto updateTranslatorProfile(Long id, TranslatorProfileRequest request) {
         Translator translator = getTranslatorById(id);
         translator.setProfessionalTitle(request.getTitle());
-        translator.setLocation(request.getBasedIn());
+        Location location = locationService.getLocationByName(request.getBasedIn());
+        translator.setLocation(location);
         translator.setAvailability(AvailabilityStatus.valueOf(request.getAvailability().toUpperCase()));
         return translatorMapper.toDto(translatorRepository.save(translator));
     }

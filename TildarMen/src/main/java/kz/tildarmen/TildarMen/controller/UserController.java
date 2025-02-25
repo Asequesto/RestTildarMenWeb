@@ -3,6 +3,7 @@ package kz.tildarmen.TildarMen.controller;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
+import kz.tildarmen.TildarMen.services.EmployerService;
 import kz.tildarmen.TildarMen.services.TranslatorService;
 import kz.tildarmen.TildarMen.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class UserController {
 
     private final UserService userService;
     private final TranslatorService translatorService;
+    private final EmployerService employerService;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
@@ -33,7 +35,10 @@ public class UserController {
         UserDto user;
         if (request.getRole().equalsIgnoreCase("translator")) {
             user = translatorService.createTranslator(request);
-        } else {
+        } else if (request.getRole().equalsIgnoreCase("employer")) {
+            user = employerService.createEmployer(request);
+        }
+        else{
             user = userService.createUser(request);
         }
         if(user == null) {

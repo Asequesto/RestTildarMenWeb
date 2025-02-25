@@ -19,7 +19,6 @@ public class Education {
     private String degree;
     private String university;
     private Long graduationYear;
-    private String degreeFileUrl;
 
     @JsonIgnore
     @ManyToOne

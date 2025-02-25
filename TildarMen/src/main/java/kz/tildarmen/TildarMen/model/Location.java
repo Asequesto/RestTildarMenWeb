@@ -1,22 +1,22 @@
 package kz.tildarmen.TildarMen.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "projects")
-public class Project {
+public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fileUrl;
+    private String city;
 
-    @ManyToOne
-    @JoinColumn(name = "translator_id")
-    private Translator translator;
 }
