@@ -4,10 +4,7 @@ import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
 import kz.tildarmen.TildarMen.model.Image;
-import kz.tildarmen.TildarMen.requests.TranslatorProfileRequest;
-import kz.tildarmen.TildarMen.requests.UpdateIntroRequest;
-import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
-import kz.tildarmen.TildarMen.requests.UpdateUserRequest;
+import kz.tildarmen.TildarMen.requests.*;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.*;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -80,6 +78,15 @@ public class TranslatorController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
 
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestParam(required = false) String availability,
+                                                            @RequestBody(required = false) SearchQueryRequest request) {
+
+        List<UserDto> translators = translatorService
+                .filterTranslators(availability, request);
+        return ResponseEntity.ok(new ApiResponse("Success", translators));
     }
 
     @PostMapping("/{id}/work")

@@ -1,6 +1,6 @@
 package kz.tildarmen.TildarMen.config;
 
-import kz.tildarmen.TildarMen.mapper.LocationRepository;
+import kz.tildarmen.TildarMen.repository.LocationRepository;
 import kz.tildarmen.TildarMen.model.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

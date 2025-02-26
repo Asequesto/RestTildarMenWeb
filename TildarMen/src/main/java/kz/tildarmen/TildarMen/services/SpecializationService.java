@@ -6,6 +6,8 @@ import kz.tildarmen.TildarMen.repository.SpecializationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -17,4 +19,7 @@ public class SpecializationService {
         return specializationRepository.findByName(name);
     }
 
+    public List<Specialization> getAllByName(List<String> specializations) {
+        return specializationRepository.findByNameIn(specializations);
+    }
 }

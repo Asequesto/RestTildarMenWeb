@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -50,6 +52,28 @@ public class TranslatorService {
         return null;
 
     }
+
+    public List<UserDto> filterTranslators(String availability,
+                                                 SearchQueryRequest request) {
+        List<Long> locations = locationService.getAllByName(request.getLocations())
+                .stream().map(Location::getId).toList();
+        List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
+                .stream().map(ServiceTypes::getId).toList();
+        List<Long> languages = languageService.getAllByName(request.getLanguages())
+                .stream().map(Language::getId).toList();
+        List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
+                .stream().map(Specialization::getId).toList();
+        AvailabilityStatus status =  null;
+        if(request.getLocations() == null) locations = null;
+        if(request.getServiceTypes() == null) services = null;
+        if(request.getSpecializations() == null) specializations = null;
+        if(request.getLanguages() == null) languages = null;
+        if(availability != null) status = AvailabilityStatus.valueOf(availability.toUpperCase());
+        return userMapper.toDtoList(
+                translatorRepository.filterTranslators(status,
+                        languages, services, specializations, locations));
+    }
+
 
     public UserDto updateTranslatorAccountSettings(UpdateUserRequest request, Long id) {
         Translator translator = getTranslatorById(id);
