@@ -2,9 +2,10 @@ package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.JobDto;
-import kz.tildarmen.TildarMen.mapper.JobMapper;
+import kz.tildarmen.TildarMen.mapper.*;
 import kz.tildarmen.TildarMen.model.*;
 import kz.tildarmen.TildarMen.repository.JobRepository;
+import kz.tildarmen.TildarMen.requests.SearchJobsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,15 @@ public class JobService {
     private final LocationService locationService;
     private final ServiceTypesService serviceTypesService;
     private final SpecializationService specializationService;
+    private final LanguageMapper languageMapper;
+    private final LocationMapper locationMapper;
+    private final ServiceTypesMapper serviceTypesMapper;
+    private final SpecializationMapper specializationMapper;
 
+    public List<JobDto> getAllJobs() {
+        List<Job> jobs = jobRepository.findAll();
+        return jobMapper.toDtoList(jobs);
+    }
 
     public List<JobDto> getJobsByEmployerId(Long employerId) {
         List<Job> jobs = jobRepository.findAllByEmployerId(employerId);
@@ -37,6 +46,29 @@ public class JobService {
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
     }
 
+    public List<JobDto> searchJobsByTitle(String jobTitle) {
+        List<Job> jobs = jobRepository.findAllByTitle(jobTitle);
+        return jobMapper.toDtoList(jobs);
+    }
+
+    public List<JobDto> filterJobs(String availability,
+                                           SearchJobsRequest request) {
+        List<Long> locations = locationService.getAllByName(request.getLocations())
+                .stream().map(Location::getId).toList();
+        List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
+                .stream().map(ServiceTypes::getId).toList();
+        List<Long> languages = languageService.getAllByName(request.getLanguages())
+                .stream().map(Language::getId).toList();
+        List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
+                .stream().map(Specialization::getId).toList();
+        if(request.getLocations() == null) locations = null;
+        if(request.getServiceTypes() == null) services = null;
+        if(request.getSpecializations() == null) specializations = null;
+        if(request.getLanguages() == null) languages = null;
+        return jobMapper.toDtoList(jobRepository
+                .filterJobs(languages, services, specializations, locations));
+    }
+
     public JobDto addJob(Long employerId, JobDto jobDto) {
         Employer employer = employerService.getEmployerById(employerId);
 
@@ -46,10 +78,11 @@ public class JobService {
         job.setDescription(jobDto.getDescription());
         job.setStartDate(jobDto.getStartDate());
         job.setEndDate(jobDto.getEndDate());
-        job.setLanguages(addLanguages(jobDto.getLanguages()));
-        job.setLocations(addLocations(jobDto.getLocations()));
-        job.setServiceTypes(addServiceTypes(jobDto.getServiceTypes()));
-        job.setSpecializations(addSpecializations(jobDto.getSpecializations()));
+
+        job.setLanguages(addLanguages(languageMapper.toEntitySet(jobDto.getLanguages())));
+        job.setLocations(addLocations(locationMapper.toEntitySet(jobDto.getLocations())));
+        job.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(jobDto.getServiceTypes())));
+        job.setSpecializations(addSpecializations(specializationMapper.toEntitySet(jobDto.getSpecializations())));
         job.setEmployer(employer);
         return jobMapper.toDto(jobRepository.save(job));
     }
@@ -97,10 +130,10 @@ public class JobService {
         newJob.setDescription(job.getDescription());
         newJob.setStartDate(job.getStartDate());
         newJob.setEndDate(job.getEndDate());
-        newJob.setLanguages(addLanguages(job.getLanguages()));
-        newJob.setLocations(addLocations(job.getLocations()));
-        newJob.setServiceTypes(addServiceTypes(job.getServiceTypes()));
-        newJob.setSpecializations(addSpecializations(job.getSpecializations()));
+        newJob.setLanguages(addLanguages(languageMapper.toEntitySet(job.getLanguages())));
+        newJob.setLocations(addLocations(locationMapper.toEntitySet(job.getLocations())));
+        newJob.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(job.getServiceTypes())));
+        newJob.setSpecializations(addSpecializations(specializationMapper.toEntitySet(job.getSpecializations())));
         newJob.setEmployer(employer);
         return jobMapper.toDto(jobRepository.save(newJob));
     }
@@ -110,5 +143,4 @@ public class JobService {
         Job job = getJobById(jobId);
         jobRepository.delete(job);
     }
-
 }

@@ -5,6 +5,8 @@ import kz.tildarmen.TildarMen.model.Location;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
 
@@ -12,5 +14,7 @@ public interface LocationMapper {
 
     @InheritInverseConfiguration
     Location toEntity(LocationDto locationDto);
+
+    Set<Location> toEntitySet(Set<LocationDto> locationDtoSet);
 
 }

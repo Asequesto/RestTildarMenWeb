@@ -54,7 +54,7 @@ public class TranslatorService {
     }
 
     public List<UserDto> filterTranslators(String availability,
-                                                 SearchQueryRequest request) {
+                                                 SearchTranslatorsRequest request) {
         List<Long> locations = locationService.getAllByName(request.getLocations())
                 .stream().map(Location::getId).toList();
         List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
@@ -74,6 +74,10 @@ public class TranslatorService {
                         languages, services, specializations, locations));
     }
 
+    public List<UserDto> searchTranslatorsByName(String username) {
+        List<User> users = translatorRepository.searchTranslatorsByUsername(username.toLowerCase());
+        return userMapper.toDtoList(users);
+    }
 
     public UserDto updateTranslatorAccountSettings(UpdateUserRequest request, Long id) {
         Translator translator = getTranslatorById(id);

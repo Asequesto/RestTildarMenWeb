@@ -14,16 +14,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/translator")
+@PreAuthorize("hasAuthority('TRANSLATOR')")
 public class TranslatorController {
 
     private final TranslatorService translatorService;
@@ -34,6 +34,7 @@ public class TranslatorController {
     private final CertificateService certificateService;
     private final ImageService imageService;
     private final VideoService videoService;
+
 
     @GetMapping("/{id}/settings")
     public ResponseEntity<ApiResponse> getTranslatorSettingsById(@PathVariable Long id) {
@@ -80,15 +81,6 @@ public class TranslatorController {
 
     }
 
-    @PostMapping("/filter")
-    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestParam(required = false) String availability,
-                                                            @RequestBody(required = false) SearchQueryRequest request) {
-
-        List<UserDto> translators = translatorService
-                .filterTranslators(availability, request);
-        return ResponseEntity.ok(new ApiResponse("Success", translators));
-    }
-
     @PostMapping("/{id}/work")
     public ResponseEntity<ApiResponse> createWorkExperience(@PathVariable Long id,
                                                             @RequestBody WorkExperienceDto request){
@@ -120,7 +112,7 @@ public class TranslatorController {
         }
     }
 
-    @PutMapping("/{id}/profileImage")
+    @PutMapping("/{id}/profile-image")
     public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long id,
                                                           @RequestParam MultipartFile file) {
 

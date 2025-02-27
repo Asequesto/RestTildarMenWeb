@@ -2,6 +2,7 @@ package kz.tildarmen.TildarMen.controller;
 
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
+import kz.tildarmen.TildarMen.requests.SearchTranslatorsRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.EmployerService;
 import kz.tildarmen.TildarMen.services.TranslatorService;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,6 +33,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/translators/search")
+    public ResponseEntity<ApiResponse> searchTranslators(@RequestParam String username) {
+        List<UserDto> users = translatorService.searchTranslatorsByName(username);
+        return ResponseEntity.ok(new ApiResponse("Success", users));
+    }
+
+    @GetMapping("/employers/search")
+    public ResponseEntity<ApiResponse> searchEmployers(@RequestParam String username) {
+        List<UserDto> users = employerService.searchEmployersByName(username);
+        return ResponseEntity.ok(new ApiResponse("Success", users));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addUser(@RequestBody CreateUserRequest request) {
         UserDto user;
@@ -46,6 +61,16 @@ public class UserController {
         }
         return ResponseEntity.ok(new ApiResponse("Success", user));
     }
+
+    @PostMapping("/translators/filter")
+    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestParam(required = false) String availability,
+                                                              @RequestBody(required = false) SearchTranslatorsRequest request) {
+
+        List<UserDto> translators = translatorService
+                .filterTranslators(availability, request);
+        return ResponseEntity.ok(new ApiResponse("Success", translators));
+    }
+
 
 
 

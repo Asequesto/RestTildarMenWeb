@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -25,6 +27,11 @@ public class EmployerService {
     public Employer getEmployerById(Long id) {
         return employerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employer not found with id: " + id));
+    }
+
+    public List<UserDto> searchEmployersByName(String username) {
+        List<User> users = employerRepository.searchEmployerByUsername(username.toLowerCase());
+        return userMapper.toDtoList(users);
     }
 
     public UserDto createEmployer(CreateUserRequest request) {
@@ -46,5 +53,4 @@ public class EmployerService {
         Employer employer = getEmployerById(id);
         employerRepository.delete(employer);
     }
-
 }
