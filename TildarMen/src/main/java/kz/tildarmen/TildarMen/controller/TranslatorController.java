@@ -3,16 +3,11 @@ package kz.tildarmen.TildarMen.controller;
 import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
-import kz.tildarmen.TildarMen.model.Image;
 import kz.tildarmen.TildarMen.requests.*;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Set;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/translator")
@@ -34,6 +31,8 @@ public class TranslatorController {
     private final CertificateService certificateService;
     private final ImageService imageService;
     private final VideoService videoService;
+    private final JobApplicationService jobApplicationService;
+    private final JobRequestService jobRequestService;
 
 
     @GetMapping("/{id}/settings")
@@ -56,29 +55,24 @@ public class TranslatorController {
         }
     }
 
-    @GetMapping("/file/download/{imageId}")
-    public ResponseEntity<Resource> downloadTranslatorFile(@PathVariable Long imageId) throws SQLException {
-            Image image = imageService.getImageById(imageId);
-            ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int)image.getImage().length()));
-            return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
-                    .body(resource);
-
-    }
-
-    @GetMapping("/video/download/{videoId}")
-    public ResponseEntity<?> downloadTranslatorVideo(@PathVariable Long videoId) throws IOException {
+    @GetMapping("/{id}/requests")
+    public ResponseEntity<ApiResponse> getTranslatorRequestsById(@PathVariable Long id) {
         try {
-            byte[] videoData = videoService.downloadVideo(videoId);
-            VideoDto video = videoService.getVideo(videoId);
-            String mediaType = videoService.getMediaType(video.getFileName());
-            return ResponseEntity.ok()
-                    .contentType(MediaType.valueOf(mediaType))
-                    .body(videoData);
+            Set<JobRequestDto> requests = jobRequestService.getTranslatorRequests(id);
+            return ResponseEntity.ok(new ApiResponse("Success", requests));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
+    }
 
+    @GetMapping("/{id}/applications")
+    public ResponseEntity<ApiResponse> getTranslatorApplicationsById(@PathVariable Long id) {
+        try {
+            Set<JobApplicationDto> applications = jobApplicationService.getTranslatorApplications(id);
+            return ResponseEntity.ok(new ApiResponse("Success", applications));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
     }
 
     @PostMapping("/{id}/work")
@@ -150,6 +144,7 @@ public class TranslatorController {
                     .body(new ApiResponse("Oops", e.getMessage()));
         }
     }
+
 
     @PutMapping("/{id}/profile")
     public ResponseEntity<ApiResponse> updateTranslatorProfile(@PathVariable Long id, @RequestBody TranslatorProfileRequest request){

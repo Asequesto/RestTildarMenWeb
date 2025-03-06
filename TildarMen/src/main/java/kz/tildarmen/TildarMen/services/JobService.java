@@ -51,8 +51,7 @@ public class JobService {
         return jobMapper.toDtoList(jobs);
     }
 
-    public List<JobDto> filterJobs(String availability,
-                                           SearchJobsRequest request) {
+    public List<JobDto> filterJobs(SearchJobsRequest request) {
         List<Long> locations = locationService.getAllByName(request.getLocations())
                 .stream().map(Location::getId).toList();
         List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
@@ -66,7 +65,8 @@ public class JobService {
         if(request.getSpecializations() == null) specializations = null;
         if(request.getLanguages() == null) languages = null;
         return jobMapper.toDtoList(jobRepository
-                .filterJobs(languages, services, specializations, locations));
+                .filterJobs(languages, services, specializations, locations,
+                        request.getStartDate(), request.getEndDate()));
     }
 
     public JobDto addJob(Long employerId, JobDto jobDto) {

@@ -33,11 +33,10 @@ public class JobController {
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<ApiResponse> getFilteredJobs(@RequestParam(required = false) String availability,
-                                                              @RequestBody(required = false) SearchJobsRequest request) {
+    public ResponseEntity<ApiResponse> getFilteredJobs(@RequestBody(required = false) SearchJobsRequest request) {
 
         List<JobDto> jobs = jobService
-                .filterJobs(availability, request);
+                .filterJobs(request);
         return ResponseEntity.ok(new ApiResponse("Success", jobs));
     }
 

@@ -5,6 +5,8 @@ import kz.tildarmen.TildarMen.model.JobApplication;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring")
 public interface JobApplicationMapper {
 
@@ -13,4 +15,5 @@ public interface JobApplicationMapper {
     @InheritInverseConfiguration
     JobApplication toEntity(JobApplicationDto jobApplicationDto);
 
+    Set<JobApplicationDto> toDtoSet(Set<JobApplication> applications);
 }

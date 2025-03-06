@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +27,16 @@ public class JobApplicationService {
     public JobApplication findById(Long id) {
         return jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Job application not found"));
+    }
+
+    public Set<JobApplicationDto> getEmployerApplications(Long id) {
+        Job job = jobService.getJobById(id);
+        return jobApplicationMapper.toDtoSet(job.getApplications());
+    }
+
+    public Set<JobApplicationDto> getTranslatorApplications(Long id){
+        Translator translator = translatorService.getTranslatorById(id);
+        return jobApplicationMapper.toDtoSet(translator.getApplications());
     }
 
     public JobApplicationDto sendApplication(Long translatorId, Long jobId) {

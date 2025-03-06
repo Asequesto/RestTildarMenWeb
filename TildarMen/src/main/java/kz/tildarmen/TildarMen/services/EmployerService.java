@@ -7,6 +7,7 @@ import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.Employer;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.EmployerRepository;
+import kz.tildarmen.TildarMen.repository.UserRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ public class EmployerService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     public Employer getEmployerById(Long id) {
         return employerRepository.findById(id)
@@ -50,7 +52,7 @@ public class EmployerService {
     }
 
     public void deleteEmployerById(Long id) {
-        Employer employer = getEmployerById(id);
-        employerRepository.delete(employer);
+        User user = getEmployerById(id);
+        userRepository.delete(user);
     }
 }

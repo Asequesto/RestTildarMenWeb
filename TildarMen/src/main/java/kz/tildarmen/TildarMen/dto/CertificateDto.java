@@ -7,6 +7,5 @@ public class CertificateDto {
 
     private String title;
     private Long year;
-    private String certificateFileUrl;
 
 }

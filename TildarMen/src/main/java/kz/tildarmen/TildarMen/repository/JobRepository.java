@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -22,12 +23,16 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             "WHERE (:languages IS NULL OR l.id IN :languages) " +
             "AND (:serviceTypes IS NULL OR st.id IN :serviceTypes) " +
             "AND (:specializations IS NULL OR sp.id IN :specializations) " +
-            "AND (:location IS NULL OR loc.id IN :location)")
+            "AND (:location IS NULL OR loc.id IN :location) " +
+            "AND (:startDate IS NULL OR j.startDate >= :startDate) " +
+            "AND (:endDate IS NULL OR j.endDate <= :endDate)")
     List<Job> filterJobs(
             @Param("languages") List<Long> languages,
             @Param("serviceTypes") List<Long> serviceTypes,
             @Param("specializations") List<Long> specializations,
-            @Param("location") List<Long> location
+            @Param("location") List<Long> location,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Query("SELECT j FROM Job j " +
