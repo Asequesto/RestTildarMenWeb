@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.JobRequestDto;
 import kz.tildarmen.TildarMen.enums.RequestStatus;
 import kz.tildarmen.TildarMen.mapper.JobRequestMapper;
-import kz.tildarmen.TildarMen.model.Employer;
-import kz.tildarmen.TildarMen.model.Job;
-import kz.tildarmen.TildarMen.model.JobRequest;
-import kz.tildarmen.TildarMen.model.Translator;
+import kz.tildarmen.TildarMen.model.*;
 import kz.tildarmen.TildarMen.repository.JobRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,8 @@ public class JobRequestService {
     private final TranslatorService translatorService;
     private final JobService jobService;
     private final JobRequestMapper jobRequestMapper;
+    private final EmailSenderService emailSenderService;
+    private final UserService userService;
 
     public JobRequest findById(Long id) {
         return jobRequestRepository.findById(id)
@@ -54,6 +53,14 @@ public class JobRequestService {
         jobRequest.setJob(job);
         jobRequest.setRequestedAt(LocalDateTime.now());
 
+        String fullName = employer.getFirstName() + " " + employer.getLastName();
+
+        String email = translator.getEmail();
+        String subject = "Employer " + fullName + " wants to hire you";
+        String message = fullName + " is sending you a job request for " + job.getTitle();
+
+        emailSenderService.sendEmail(email, subject, message);
+
         return jobRequestMapper.toDto(jobRequestRepository.save(jobRequest));
 
     }
@@ -62,6 +69,15 @@ public class JobRequestService {
     public void updateRequestStatus(Long jobRequestId, String status){
         JobRequest jobRequest = findById(jobRequestId);
         jobRequest.setStatus(RequestStatus.valueOf(status.toUpperCase()));
+        User user = userService.getAuthenticatedUser();
+        Job job = jobRequest.getJob();
+
+        String email = jobRequest.getEmployer().getEmail();
+        String subject = "Job Request " + jobRequestId +  " Responded";
+        String message = "Your job request for - " + job.getTitle() + " has been "+ status +  " by " +
+                user.getFirstName() + " " + user.getLastName();
+
+        emailSenderService.sendEmail(email, subject, message);
         jobRequestRepository.save(jobRequest);
     }
 
