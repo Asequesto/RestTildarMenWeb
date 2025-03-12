@@ -1,6 +1,5 @@
-package kz.tildarmen.TildarMen.config;
+package kz.tildarmen.TildarMen.security;
 
-import kz.tildarmen.TildarMen.security.TildarMenUserDetailsService;
 import kz.tildarmen.TildarMen.security.jwt.AuthTokenFilter;
 import kz.tildarmen.TildarMen.security.jwt.JwtAuthEntryPoint;
 import kz.tildarmen.TildarMen.security.jwt.JwtUtils;
@@ -36,7 +35,7 @@ public class TildarMenConfig {
     private final JwtAuthEntryPoint authEntryPoint;
 
     private static final List<String> SECURED_URLS =
-            List.of("/translator/**","/employer/**" );
+            List.of("/translator/**","/employer/**", "/ws/**");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -67,7 +66,8 @@ public class TildarMenConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
                         .anyRequest().permitAll());
         http.authenticationProvider(daoAuthenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);

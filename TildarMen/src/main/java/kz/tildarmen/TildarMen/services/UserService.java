@@ -63,4 +63,8 @@ public class UserService {
         String email = authentication.getName();
         return userRepository.findByEmail(email);
     }
+
+    public void disconnectUser(){
+        //TODO - Make an Online status for user.
+    }
 }
