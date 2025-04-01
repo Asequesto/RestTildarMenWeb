@@ -5,10 +5,12 @@ import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.enums.Role;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.Employer;
+import kz.tildarmen.TildarMen.model.Location;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.EmployerRepository;
 import kz.tildarmen.TildarMen.repository.UserRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
+import kz.tildarmen.TildarMen.requests.GetEmployerProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class EmployerService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final LocationService locationService;
 
     public Employer getEmployerById(Long id) {
         return employerRepository.findById(id)
@@ -49,6 +52,17 @@ public class EmployerService {
             return userMapper.toUserDto(employerRepository.save(employer));
         }
         return null;
+    }
+
+    public void updateProfile(GetEmployerProfile profile, Long id) {
+        Employer employer = getEmployerById(id);
+        if(profile.getIntroduction() != null) employer.setIntroduction(profile.getIntroduction());
+        if(profile.getLocation() != null) {
+            Location location = locationService.getLocationByName(profile.getLocation());
+            employer.setLocation(location);
+        }
+        if(profile.getFirstName() != null) employer.setFirstName(profile.getFirstName());
+        if(profile.getLastName() != null) employer.setLastName(profile.getLastName());
     }
 
     public void deleteEmployerById(Long id) {

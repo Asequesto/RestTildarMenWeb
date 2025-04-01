@@ -3,6 +3,8 @@ package kz.tildarmen.TildarMen.controller;
 import kz.tildarmen.TildarMen.dto.JobApplicationDto;
 import kz.tildarmen.TildarMen.dto.JobDto;
 import kz.tildarmen.TildarMen.dto.JobRequestDto;
+import kz.tildarmen.TildarMen.model.Employer;
+import kz.tildarmen.TildarMen.requests.GetEmployerProfile;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.EmployerService;
 import kz.tildarmen.TildarMen.services.JobApplicationService;
@@ -27,6 +29,21 @@ public class EmployerController {
     private final EmployerService employerService;
     private final JobApplicationService jobApplicationService;
     private final JobRequestService jobRequestService;
+
+    @GetMapping("/{id}/profile")
+    public ResponseEntity<ApiResponse> getEmployerProfile(@PathVariable Long id) {
+        try {
+            Employer employer = employerService.getEmployerById(id);
+            GetEmployerProfile profile = new GetEmployerProfile();
+            profile.setIntroduction(employer.getIntroduction());
+            profile.setFirstName(employer.getFirstName());
+            profile.setLastName(employer.getLastName());
+            profile.setLocation(employer.getLocation().getCity());
+            return ResponseEntity.ok(new ApiResponse("Success", profile));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
 
     @GetMapping("/{id}/jobs")
     public ResponseEntity<ApiResponse> getAllEmployerJobs(@PathVariable Long id) {
@@ -53,6 +70,17 @@ public class EmployerController {
         try {
             Set<JobApplicationDto> requests = jobApplicationService.getEmployerApplications(id);
             return ResponseEntity.ok(new ApiResponse("Success", requests));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/profile/update")
+    public ResponseEntity<ApiResponse> updateEmployerProfile(@PathVariable Long id,
+                                                          @RequestBody GetEmployerProfile profile) {
+        try {
+            employerService.updateProfile(profile, id);
+            return ResponseEntity.ok(new ApiResponse("Success", profile));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
