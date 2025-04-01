@@ -16,13 +16,13 @@ public class ChatMessageService {
 
     public ChatMessage saveMessage(ChatMessage chatMessage) {
         String chatId = chatRoomService.getChatRoomId(chatMessage.getSenderId(),
-                chatMessage.getRecipientId(), true);
+                chatMessage.getRecipientId());
         chatMessage.setChatId(chatId);
         return chatMessageRepository.save(chatMessage);
     }
 
     public List<ChatMessage> findChatMessages(String senderId, String recipientId) {
-        String chatId = chatRoomService.getChatRoomId(senderId, recipientId, false);
+        String chatId = chatRoomService.getChatRoomId(senderId, recipientId);
         return chatMessageRepository.findByChatId(chatId);
     }
 

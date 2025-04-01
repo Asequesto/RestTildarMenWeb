@@ -24,6 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
@@ -63,16 +65,18 @@ public class TildarMenConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.cors(withDefaults()) // ✅ Enable CORS
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
                         .anyRequest().permitAll());
+
         http.authenticationProvider(daoAuthenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
 
+        return http.build();
     }
 
     @Bean

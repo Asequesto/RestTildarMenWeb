@@ -10,12 +10,13 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
-    public String getChatRoomId(String senderId, String recipientId, boolean exists){
+    public String getChatRoomId(String senderId, String recipientId){
+        System.out.println("I am here");
+        String chatRoomId;
         ChatRoom room = chatRoomRepository.findBySenderIdAndRecipientId(senderId, recipientId);
-        if(exists){
-            return room.getId();
-        }
-        return createRoom(senderId, recipientId);
+        if(room == null) chatRoomId = createRoom(senderId, recipientId);
+        else chatRoomId = room.getChatId();
+        return chatRoomId;
     }
 
     public String createRoom(String senderId, String recipientId){
