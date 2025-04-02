@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +20,8 @@ public class Translator extends User {
     private String introduction;
 
     private String professionalTitle;
+
+    private double rating = 5.0;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availability;
@@ -68,9 +69,9 @@ public class Translator extends User {
     private List<Certificate> certificates;
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<JobRequest> jobRequests = new HashSet<>();
+    private List<JobRequest> jobRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<JobApplication> applications = new HashSet<>();
+    private List<JobApplication> applications = new ArrayList<>();
 
 }

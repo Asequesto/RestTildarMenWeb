@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -58,7 +58,7 @@ public class TranslatorController {
     @GetMapping("/{id}/requests")
     public ResponseEntity<ApiResponse> getTranslatorRequestsById(@PathVariable Long id) {
         try {
-            Set<JobRequestDto> requests = jobRequestService.getTranslatorRequests(id);
+            List<JobRequestDto> requests = jobRequestService.getTranslatorRequests(id);
             return ResponseEntity.ok(new ApiResponse("Success", requests));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
@@ -68,7 +68,7 @@ public class TranslatorController {
     @GetMapping("/{id}/applications")
     public ResponseEntity<ApiResponse> getTranslatorApplicationsById(@PathVariable Long id) {
         try {
-            Set<JobApplicationDto> applications = jobApplicationService.getTranslatorApplications(id);
+            List<JobApplicationDto> applications = jobApplicationService.getTranslatorApplications(id);
             return ResponseEntity.ok(new ApiResponse("Success", applications));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));

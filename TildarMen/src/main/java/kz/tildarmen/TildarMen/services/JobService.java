@@ -2,6 +2,7 @@ package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.JobDto;
+import kz.tildarmen.TildarMen.dto.JobTranslatorsDto;
 import kz.tildarmen.TildarMen.mapper.*;
 import kz.tildarmen.TildarMen.model.*;
 import kz.tildarmen.TildarMen.repository.JobRepository;
@@ -29,6 +30,7 @@ public class JobService {
     private final LocationMapper locationMapper;
     private final ServiceTypesMapper serviceTypesMapper;
     private final SpecializationMapper specializationMapper;
+    private final JobTranslatorsMapper jobTranslatorsMapper;
 
     public List<JobDto> getAllJobs() {
         List<Job> jobs = jobRepository.findAll();
@@ -44,6 +46,13 @@ public class JobService {
     public Job getJobById(Long jobId) {
         return jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
+    }
+    public List<JobTranslatorsDto> getJobTranslators(Long id) {
+        Job job = getJobById(id);
+        List<JobTranslatorsDto> requests = jobTranslatorsMapper.fromRequestList(job.getJobRequests());
+        List<JobTranslatorsDto> applications = jobTranslatorsMapper.fromApplicationList(job.getApplications());
+        applications.addAll(requests);
+        return applications;
     }
 
     public List<JobDto> searchJobsByTitle(String jobTitle) {
@@ -78,6 +87,7 @@ public class JobService {
         job.setDescription(jobDto.getDescription());
         job.setStartDate(jobDto.getStartDate());
         job.setEndDate(jobDto.getEndDate());
+        job.setPrice(jobDto.getPrice());
 
         job.setLanguages(addLanguages(languageMapper.toEntitySet(jobDto.getLanguages())));
         job.setLocations(addLocations(locationMapper.toEntitySet(jobDto.getLocations())));
@@ -130,6 +140,7 @@ public class JobService {
         newJob.setDescription(job.getDescription());
         newJob.setStartDate(job.getStartDate());
         newJob.setEndDate(job.getEndDate());
+        newJob.setPrice(job.getPrice());
         newJob.setLanguages(addLanguages(languageMapper.toEntitySet(job.getLanguages())));
         newJob.setLocations(addLocations(locationMapper.toEntitySet(job.getLocations())));
         newJob.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(job.getServiceTypes())));

@@ -1,0 +1,33 @@
+package kz.tildarmen.TildarMen.mapper;
+
+import kz.tildarmen.TildarMen.dto.JobTranslatorsDto;
+import kz.tildarmen.TildarMen.model.JobApplication;
+import kz.tildarmen.TildarMen.model.JobRequest;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface JobTranslatorsMapper {
+
+    @Mapping(source = "translator.firstName", target = "firstName")
+    @Mapping(source = "translator.lastName", target = "lastName")
+    @Mapping(source = "translator.rating", target = "rating")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "appliedAt", target = "sendAt")
+    @Mapping(source = "job.price", target = "price")
+    JobTranslatorsDto fromApplication(JobApplication jobApplication);
+
+    @Mapping(source = "translator.firstName", target = "firstName")
+    @Mapping(source = "translator.lastName", target = "lastName")
+    @Mapping(source = "translator.rating", target = "rating")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "requestedAt", target = "sendAt")
+    @Mapping(source = "job.price", target = "price")
+    JobTranslatorsDto fromRequest(JobRequest jobRequest);
+
+    List<JobTranslatorsDto> fromApplicationList(List<JobApplication> jobApplicationList);
+    List<JobTranslatorsDto> fromRequestList(List<JobRequest> jobRequestList);
+
+}

@@ -4,13 +4,12 @@ import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.enums.Role;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
-import kz.tildarmen.TildarMen.model.Employer;
-import kz.tildarmen.TildarMen.model.Location;
-import kz.tildarmen.TildarMen.model.User;
+import kz.tildarmen.TildarMen.model.*;
 import kz.tildarmen.TildarMen.repository.EmployerRepository;
 import kz.tildarmen.TildarMen.repository.UserRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import kz.tildarmen.TildarMen.requests.GetEmployerProfile;
+import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -63,6 +62,18 @@ public class EmployerService {
         }
         if(profile.getFirstName() != null) employer.setFirstName(profile.getFirstName());
         if(profile.getLastName() != null) employer.setLastName(profile.getLastName());
+    }
+
+    public void updatePassword(Long id, UpdatePasswordRequest request) {
+        Employer employer = getEmployerById(id);
+        if (!passwordEncoder.matches(request.getOldPassword(), employer.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+        if(!request.getPassword().equals(request.getRepeatPassword())) {
+            throw new IllegalArgumentException("Passwords does not match");
+        }
+        employer.setPassword(passwordEncoder.encode(request.getPassword()));
+        employerRepository.save(employer);
     }
 
     public void deleteEmployerById(Long id) {

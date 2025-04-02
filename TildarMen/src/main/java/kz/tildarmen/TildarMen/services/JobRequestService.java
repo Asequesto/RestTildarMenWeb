@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -30,14 +30,14 @@ public class JobRequestService {
                 .orElseThrow(() -> new IllegalArgumentException("JobRequest with id " + id + " not found"));
     }
 
-    public Set<JobRequestDto> getEmployerRequests(Long id) {
+    public List<JobRequestDto> getEmployerRequests(Long id) {
         Employer employer = employerService.getEmployerById(id);
-        return jobRequestMapper.toDtoSet(employer.getJobRequests());
+        return jobRequestMapper.toDtoList(employer.getJobRequests());
     }
 
-    public Set<JobRequestDto> getTranslatorRequests(Long id){
+    public List<JobRequestDto> getTranslatorRequests(Long id){
         Translator translator = translatorService.getTranslatorById(id);
-        return jobRequestMapper.toDtoSet(translator.getJobRequests());
+        return jobRequestMapper.toDtoList(translator.getJobRequests());
     }
 
 

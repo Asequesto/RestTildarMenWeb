@@ -5,7 +5,7 @@ import kz.tildarmen.TildarMen.model.JobRequest;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
-import java.util.Set;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface JobRequestMapper {
@@ -15,5 +15,5 @@ public interface JobRequestMapper {
     @InheritInverseConfiguration
     JobRequest toEntity(JobRequestDto jobRequestDto);
 
-    Set<JobRequestDto> toDtoSet(Set<JobRequest> jobRequests);
+    List<JobRequestDto> toDtoList(List<JobRequest> jobRequests);
 }

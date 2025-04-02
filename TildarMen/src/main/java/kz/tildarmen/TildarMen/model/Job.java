@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,12 +25,23 @@ public class Job {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalDate publicationDate = LocalDate.now();
+    private Long price;
+    private int applicantsCount = 0;
+
+    public void increaseApplicantsCount() {
+        this.applicantsCount++;
+    }
+
+    public void decreaseApplicantsCount() {
+        if (this.applicantsCount > 0) this.applicantsCount--;
+    }
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<JobRequest> jobRequests = new HashSet<>();
+    private List<JobRequest> jobRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<JobApplication> applications = new HashSet<>();
+    private List<JobApplication> applications = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
