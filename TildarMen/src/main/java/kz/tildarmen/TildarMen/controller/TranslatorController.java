@@ -3,6 +3,8 @@ package kz.tildarmen.TildarMen.controller;
 import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
+import kz.tildarmen.TildarMen.mapper.UserMapper;
+import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.*;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.*;
@@ -26,6 +28,7 @@ public class TranslatorController {
     private final TranslatorService translatorService;
     private final WorkExperienceService workExperienceService;
     private final UserService userService;
+    private final UserMapper userMapper;
     private final TranslatorMapper translatorMapper;
     private final EducationService educationService;
     private final CertificateService certificateService;
@@ -38,8 +41,8 @@ public class TranslatorController {
     @GetMapping("/{id}/settings")
     public ResponseEntity<ApiResponse> getTranslatorSettingsById(@PathVariable Long id) {
         try {
-            UserDto user = userService.getUserById(id);
-            return ResponseEntity.ok(new ApiResponse("Success", user));
+            User user = userService.getUserById(id);
+            return ResponseEntity.ok(new ApiResponse("Success", userMapper.toUserDto(user)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }

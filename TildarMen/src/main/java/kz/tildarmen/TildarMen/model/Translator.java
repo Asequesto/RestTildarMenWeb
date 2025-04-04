@@ -22,6 +22,7 @@ public class Translator extends User {
     private String professionalTitle;
 
     private double rating = 5.0;
+    private int reviews = 0;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availability;
@@ -73,5 +74,19 @@ public class Translator extends User {
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobApplication> applications = new ArrayList<>();
+
+    public void addRating(double rating) {
+        double totalRating = this.rating * this.reviews;
+        this.reviews++;
+        totalRating += rating;
+        this.rating = totalRating / this.reviews;
+    }
+
+    public void removeRating(double rating) {
+        double totalRating = this.rating * this.reviews;
+        this.reviews--;
+        totalRating -= rating;
+        this.rating = totalRating / this.reviews;
+    }
 
 }

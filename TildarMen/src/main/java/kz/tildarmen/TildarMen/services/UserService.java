@@ -23,10 +23,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-    public UserDto getUserById(Long id){
+    public User getUserById(Long id){
 
-        return userMapper.toUserDto(userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found")));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public UserDto createUser(CreateUserRequest request) {

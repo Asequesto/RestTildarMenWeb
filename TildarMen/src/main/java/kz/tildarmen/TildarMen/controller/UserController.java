@@ -1,6 +1,8 @@
 package kz.tildarmen.TildarMen.controller;
 
 import kz.tildarmen.TildarMen.dto.UserDto;
+import kz.tildarmen.TildarMen.mapper.UserMapper;
+import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import kz.tildarmen.TildarMen.requests.SearchTranslatorsRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
@@ -22,12 +24,13 @@ public class UserController {
     private final UserService userService;
     private final TranslatorService translatorService;
     private final EmployerService employerService;
+    private final UserMapper userMapper;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
-            UserDto user = userService.getUserById(userId);
-            return ResponseEntity.ok(new ApiResponse("Success", user));
+            User user = userService.getUserById(userId);
+            return ResponseEntity.ok(new ApiResponse("Success", userMapper.toUserDto(user)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("User not found, Fail!", e.getMessage()));
         }

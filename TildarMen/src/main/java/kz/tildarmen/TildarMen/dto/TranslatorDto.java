@@ -12,6 +12,8 @@ public class TranslatorDto {
 
     private String introduction;
     private String professionalTitle;
+    private double rating;
+    private int reviews;
     private AvailabilityStatus availability;
     private Set<LanguageDto> languages;
     private Set<ServiceTypesDto> serviceTypes;
