@@ -3,8 +3,8 @@ package kz.tildarmen.TildarMen.controller;
 import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
-import kz.tildarmen.TildarMen.mapper.UserMapper;
-import kz.tildarmen.TildarMen.model.User;
+import kz.tildarmen.TildarMen.mapper.TranslatorSettingsMapper;
+import kz.tildarmen.TildarMen.model.Translator;
 import kz.tildarmen.TildarMen.requests.*;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.*;
@@ -27,8 +27,6 @@ public class TranslatorController {
 
     private final TranslatorService translatorService;
     private final WorkExperienceService workExperienceService;
-    private final UserService userService;
-    private final UserMapper userMapper;
     private final TranslatorMapper translatorMapper;
     private final EducationService educationService;
     private final CertificateService certificateService;
@@ -36,13 +34,14 @@ public class TranslatorController {
     private final VideoService videoService;
     private final JobApplicationService jobApplicationService;
     private final JobRequestService jobRequestService;
+    private final TranslatorSettingsMapper translatorSettingsMapper;
 
 
     @GetMapping("/{id}/settings")
     public ResponseEntity<ApiResponse> getTranslatorSettingsById(@PathVariable Long id) {
         try {
-            User user = userService.getUserById(id);
-            return ResponseEntity.ok(new ApiResponse("Success", userMapper.toUserDto(user)));
+            Translator translator = translatorService.getTranslatorById(id);
+            return ResponseEntity.ok(new ApiResponse("Success", translatorSettingsMapper.toDto(translator)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }

@@ -1,10 +1,12 @@
 package kz.tildarmen.TildarMen.services;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -14,17 +16,20 @@ public class EmailSenderService {
 
     private final JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")  // Inject email from properties
+    @Value("${spring.mail.username}")
     private String emailUsername;
 
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(emailUsername);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
+    public void sendEmail(String to, String subject, String body) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        mailSender.send(message);
+        helper.setFrom(emailUsername);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(body, true);
+
+        mailSender.send(mimeMessage);
+
     }
 
 }

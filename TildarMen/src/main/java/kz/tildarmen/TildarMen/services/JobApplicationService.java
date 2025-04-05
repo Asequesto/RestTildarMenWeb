@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.services;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.JobApplicationDto;
 import kz.tildarmen.TildarMen.enums.RequestStatus;
@@ -42,7 +43,7 @@ public class JobApplicationService {
         return jobApplicationMapper.toDtoList(translator.getApplications());
     }
 
-    public JobApplicationDto sendApplication(Long translatorId, Long jobId) {
+    public JobApplicationDto sendApplication(Long translatorId, Long jobId) throws MessagingException {
         Translator translator = translatorService.getTranslatorById(translatorId);
         Job job = jobService.getJobById(jobId);
 
@@ -55,22 +56,49 @@ public class JobApplicationService {
 
         String email = job.getEmployer().getEmail();
         String subject = "Translator " + fullName + " is sending you a job application";
-        String message = fullName + " is sending you a job application for " + job.getTitle();
+        String message = """
+            <html>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2 style="color: #2c3e50;">New Job Application Received</h2>
+                    <p><strong>%s</strong> has applied to your job posting: <strong>%s</strong>.</p>
+                    <p>You can view their translator profile and resume by logging into your dashboard.</p>
+                    <hr />
+                    <p style="font-size: 0.9em; color: #999;">TildarMen - Connecting employers and professional translators</p>
+                </body>
+            </html>
+            """.formatted(fullName, job.getTitle());
 
         emailSenderService.sendEmail(email, subject, message);
 
         return jobApplicationMapper.toDto(jobApplicationRepository.save(application));
     }
 
-    public void updateApplicationStatus(Long jobApplicationId, String status) {
+    public void updateApplicationStatus(Long jobApplicationId, String status) throws MessagingException {
         JobApplication application = findById(jobApplicationId);
         User user = userService.getAuthenticatedUser();
         Job job = application.getJob();
 
         String email = application.getTranslator().getEmail();
         String subject = "Job Application " + jobApplicationId + " got responded";
-        String message = "Your job application for - " + job.getTitle() + " has been "+ status +  " by " +
-                user.getFirstName() + " " + user.getLastName();
+        String message = """
+            <html>
+                <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+                    <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <h2 style="color: #2c3e50;">Job Application Update</h2>
+                        <p style="font-size: 16px; color: #333;">
+                            Your job application for <strong>%s</strong> has been <strong>%s</strong> by <strong>%s %s</strong>.
+                        </p>
+                        <p style="font-size: 14px; color: #666;">
+                            Please check your dashboard for more details.
+                        </p>
+                        <hr style="border: none; border-top: 1px solid #eee;" />
+                        <p style="font-size: 12px; color: #aaa; text-align: center;">
+                            TildarMen • Professional Translation Platform
+                        </p>
+                    </div>
+                </body>
+            </html>
+            """.formatted(job.getTitle(), status, user.getFirstName(), user.getLastName());
 
         emailSenderService.sendEmail(email, subject, message);
         application.setStatus(RequestStatus.valueOf(status.toUpperCase()));
