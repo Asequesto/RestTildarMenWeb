@@ -11,7 +11,7 @@ import kz.tildarmen.TildarMen.requests.CreateReviewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class ReviewService {
         Review review = new Review();
         review.setComment(request.getComment());
         review.setUser(user);
-        review.setCreationDate(LocalDate.now());
+        review.setCreationDate(LocalDateTime.now());
         review.setRating(request.getRating());
         review.setTranslator(translator);
         translatorRepository.save(translator);

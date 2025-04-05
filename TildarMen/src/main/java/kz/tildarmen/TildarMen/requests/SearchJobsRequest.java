@@ -2,7 +2,7 @@ package kz.tildarmen.TildarMen.requests;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -11,6 +11,6 @@ public class SearchJobsRequest {
     List<String> serviceTypes;
     List<String> specializations;
     List<String> locations;
-    LocalDate startDate;
-    LocalDate endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
 }

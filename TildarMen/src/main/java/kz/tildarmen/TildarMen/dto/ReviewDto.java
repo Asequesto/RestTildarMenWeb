@@ -2,7 +2,7 @@ package kz.tildarmen.TildarMen.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class ReviewDto {
@@ -12,6 +12,6 @@ public class ReviewDto {
     private String lastName;
     private String comment;
     private int rating;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
 }

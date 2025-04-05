@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -23,9 +23,9 @@ public class Job {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalDate publicationDate = LocalDate.now();
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private LocalDateTime publicationDate = LocalDateTime.now();
     private Long price;
     private int applicantsCount = 0;
 

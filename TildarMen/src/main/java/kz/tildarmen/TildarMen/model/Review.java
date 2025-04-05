@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,7 +21,7 @@ public class Review {
 
     private String comment;
     private int rating;
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @ManyToOne
     private User user;

@@ -1,15 +1,15 @@
 package kz.tildarmen.TildarMen.dto;
 
 import lombok.Data;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class WorkExperienceDto {
 
     private String position;
     private String companyName;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String description;
 
 

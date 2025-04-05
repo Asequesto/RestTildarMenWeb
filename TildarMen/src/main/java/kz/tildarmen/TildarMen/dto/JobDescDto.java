@@ -2,13 +2,13 @@ package kz.tildarmen.TildarMen.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class JobDescDto {
 
     private String title;
     private Long price;
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
 }
