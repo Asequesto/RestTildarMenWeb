@@ -5,6 +5,7 @@ import kz.tildarmen.TildarMen.model.Specialization;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
@@ -17,4 +18,5 @@ public interface SpecializationMapper {
 
     Set<Specialization> toEntitySet(Set<SpecializationDto> specializationDtoSet);
 
+    List<SpecializationDto> toDtoList(List<Specialization> specializations);
 }

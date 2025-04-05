@@ -1,6 +1,8 @@
 package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.dto.SpecializationDto;
+import kz.tildarmen.TildarMen.mapper.SpecializationMapper;
 import kz.tildarmen.TildarMen.model.Specialization;
 import kz.tildarmen.TildarMen.repository.SpecializationRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.List;
 public class SpecializationService {
 
     private final SpecializationRepository specializationRepository;
+    private final SpecializationMapper specializationMapper;
 
     public Specialization getSpecializationByName(String name) {
         return specializationRepository.findByName(name);
@@ -21,5 +24,10 @@ public class SpecializationService {
 
     public List<Specialization> getAllByName(List<String> specializations) {
         return specializationRepository.findByNameIn(specializations);
+    }
+
+    public List<SpecializationDto> getAll() {
+        List<Specialization> specializations = specializationRepository.findAll();
+        return specializationMapper.toDtoList(specializations);
     }
 }

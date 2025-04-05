@@ -5,6 +5,7 @@ import kz.tildarmen.TildarMen.model.Language;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
@@ -17,4 +18,5 @@ public interface LanguageMapper {
 
     Set<Language> toEntitySet(Set<LanguageDto> languageDtoSet);
 
+    List<LanguageDto> toDtoList(List<Language> languages);
 }

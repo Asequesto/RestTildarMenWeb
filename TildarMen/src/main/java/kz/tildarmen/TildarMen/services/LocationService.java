@@ -1,6 +1,8 @@
 package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.dto.LocationDto;
+import kz.tildarmen.TildarMen.mapper.LocationMapper;
 import kz.tildarmen.TildarMen.repository.LocationRepository;
 import kz.tildarmen.TildarMen.model.Location;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.List;
 public class LocationService {
 
     private final LocationRepository locationRepository;
+    private final LocationMapper locationMapper;
 
 
     public Location getLocationByName(String location) {
@@ -22,5 +25,10 @@ public class LocationService {
 
     public List<Location> getAllByName(List<String> locations) {
         return locationRepository.findByCityInIgnoreCase(locations);
+    }
+
+    public List<LocationDto> getAllCities() {
+        List<Location> cities = locationRepository.findAll();
+        return locationMapper.toDtoList(cities);
     }
 }
