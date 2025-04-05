@@ -69,7 +69,7 @@ public class JobRequestService {
                         <p style="font-size: 18px; color: #2c3e50; font-weight: bold; margin-top: -10px;">%s</p>
                         <p style="font-size: 14px; color: #666;">
                             Please review the request and respond via your TildarMen dashboard.
-    `                    </p>
+                        </p>
                         <br/>
                         <a href="https://tildarmen.com/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">View Job Request</a>
                         <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">

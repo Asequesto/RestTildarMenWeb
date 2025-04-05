@@ -57,16 +57,26 @@ public class JobApplicationService {
         String email = job.getEmployer().getEmail();
         String subject = "Translator " + fullName + " is sending you a job application";
         String message = """
-            <html>
-                <body style="font-family: Arial, sans-serif; line-height: 1.6;">
-                    <h2 style="color: #2c3e50;">New Job Application Received</h2>
-                    <p><strong>%s</strong> has applied to your job posting: <strong>%s</strong>.</p>
-                    <p>You can view their translator profile and resume by logging into your dashboard.</p>
-                    <hr />
-                    <p style="font-size: 0.9em; color: #999;">TildarMen - Connecting employers and professional translators</p>
+           <html>
+                <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                    <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+                        <h2 style="color: #2c3e50;">New Job Application Received</h2>
+                        <p style="font-size: 16px; color: #333;">
+                            <strong>%s</strong> has applied to your job posting</strong>
+                        </p>
+                        <p style="font-size: 18px; color: #2c3e50; font-weight: bold; margin-top: -10px;">%s</p>
+                        <p style="font-size: 14px; color: #666;">
+                            You can review their translator profile and resume by logging into your account</p>
+                        <br/>
+                        <a href="https://tildarmen.com/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">View Job Request</a>
+                        <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">
+                        <p style="font-size: 12px; color: #999; text-align: center;">
+                            TildarMen — Bridging Clients and Professional Translators
+                        </p>
+                    </div>
                 </body>
             </html>
-            """.formatted(fullName, job.getTitle());
+    """.formatted(fullName, job.getTitle());
 
         emailSenderService.sendEmail(email, subject, message);
 
