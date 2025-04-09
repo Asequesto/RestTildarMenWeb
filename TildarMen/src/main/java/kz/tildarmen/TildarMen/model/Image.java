@@ -1,7 +1,6 @@
 package kz.tildarmen.TildarMen.model;
 
 import jakarta.persistence.*;
-import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +20,6 @@ public class Image {
     private Long id;
     private String fileName;
     private String fileType;
-
-    @Enumerated(EnumType.STRING)
-    private ImageUsageType usageType;
 
     @Lob
     private Blob image;

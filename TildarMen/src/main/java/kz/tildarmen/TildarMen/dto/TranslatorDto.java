@@ -15,12 +15,12 @@ public class TranslatorDto {
     private double rating;
     private int reviews;
     private AvailabilityStatus availability;
+    private ImageDto image;
+    private List<String> projectUrls;
     private Set<LanguageDto> languages;
     private Set<ServiceTypesDto> serviceTypes;
     private Set<SpecializationDto> specializations;
     private LocationDto location;
-    private VideoDto videoGreeting;
-    private List<ImageDto> images;
     private List<WorkExperienceDto> workExperiences;
     private List<EducationDto> educations;
     private List<CertificateDto> certificates;

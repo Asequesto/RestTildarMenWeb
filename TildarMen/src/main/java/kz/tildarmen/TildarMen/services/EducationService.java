@@ -6,8 +6,11 @@ import kz.tildarmen.TildarMen.mapper.EducationMapper;
 import kz.tildarmen.TildarMen.model.Education;
 import kz.tildarmen.TildarMen.model.Translator;
 import kz.tildarmen.TildarMen.repository.EducationRepository;
+import kz.tildarmen.TildarMen.requests.UploadEducationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @Transactional
@@ -17,18 +20,22 @@ public class EducationService {
     private final EducationRepository educationRepository;
     private final TranslatorService translatorService;
     private final EducationMapper educationMapper;
+    private final ImageService imageService;
 
-    public EducationDto addEducation(Long translatorId, EducationDto request) {
+    public EducationDto addEducation(Long translatorId, UploadEducationRequest request) throws IOException {
         Translator translator = translatorService.getTranslatorById(translatorId);
         Education education = new Education();
         education.setTranslator(translator);
         education.setDegree(request.getDegree());
         education.setUniversity(request.getUniversity());
         education.setGraduationYear(request.getGraduationYear());
+        String url = imageService.uploadFile(translatorId, request.getFile(), null);
+        education.setDegreeUrl(url);
         return educationMapper.toDto(educationRepository.save(education));
     }
 
-    public EducationDto updateEducation(Long translatorId, Long educationId, EducationDto request) {
+    public EducationDto updateEducation(Long translatorId, Long educationId,
+                                        UploadEducationRequest request) throws IOException {
 
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new IllegalArgumentException("Education not found"));
@@ -38,6 +45,8 @@ public class EducationService {
         education.setDegree(request.getDegree());
         education.setUniversity(request.getUniversity());
         education.setGraduationYear(request.getGraduationYear());
+        String url = imageService.uploadFile(translatorId, request.getFile(), null);
+        education.setDegreeUrl(url);
         return educationMapper.toDto(educationRepository.save(education));
     }
 

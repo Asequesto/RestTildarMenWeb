@@ -1,6 +1,5 @@
 package kz.tildarmen.TildarMen.dto;
 
-import kz.tildarmen.TildarMen.enums.ImageUsageType;
 import lombok.Data;
 
 @Data
@@ -10,6 +9,5 @@ public class ImageDto {
     private String fileName;
     private String fileType;
     private String downloadUrl;
-    private ImageUsageType usageType;
 
 }

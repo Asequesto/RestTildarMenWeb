@@ -15,6 +15,7 @@ public class Certificate {
     private Long id;
 
     private String title;
+    private String certificateUrl;
     private Long year;
 
     @ManyToOne

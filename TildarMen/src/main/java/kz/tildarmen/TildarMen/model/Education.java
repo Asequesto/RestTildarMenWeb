@@ -17,6 +17,7 @@ public class Education {
     private Long id;
 
     private String degree;
+    private String degreeUrl;
     private String university;
     private Long graduationYear;
 

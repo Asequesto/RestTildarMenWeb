@@ -6,8 +6,11 @@ import kz.tildarmen.TildarMen.mapper.CertificateMapper;
 import kz.tildarmen.TildarMen.model.Certificate;
 import kz.tildarmen.TildarMen.model.Translator;
 import kz.tildarmen.TildarMen.repository.CertificateRepository;
+import kz.tildarmen.TildarMen.requests.UploadCertificateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,17 +20,21 @@ public class CertificateService {
     private final CertificateRepository certificateRepository;
     private final TranslatorService translatorService;
     private final CertificateMapper certificateMapper;
+    private final ImageService imageService;
 
-    public CertificateDto addCertificate(Long translatorId, CertificateDto request) {
+    public CertificateDto addCertificate(Long translatorId, UploadCertificateRequest request) throws IOException {
         Translator translator = translatorService.getTranslatorById(translatorId);
         Certificate certificate = new Certificate();
         certificate.setTranslator(translator);
         certificate.setTitle(request.getTitle());
         certificate.setYear(request.getYear());
+        String url = imageService.uploadFile(translatorId, request.getFile(), null);
+        certificate.setCertificateUrl(url);
         return certificateMapper.toDto(certificateRepository.save(certificate));
     }
 
-    public CertificateDto updateCertificate(Long translatorId, Long certificateId, CertificateDto request) {
+    public CertificateDto updateCertificate(Long translatorId, Long certificateId,
+                                            UploadCertificateRequest request) throws IOException {
         Certificate certificate = certificateRepository.findById(certificateId)
                 .orElseThrow(() -> new IllegalArgumentException("Certificate not found"));
         if(!certificate.getTranslator().getId().equals(translatorId)) {
@@ -35,6 +42,8 @@ public class CertificateService {
         }
         certificate.setTitle(request.getTitle());
         certificate.setYear(request.getYear());
+        String url = imageService.uploadFile(translatorId, request.getFile(), null);
+        certificate.setCertificateUrl(url);
         return certificateMapper.toDto(certificateRepository.save(certificate));
     }
 

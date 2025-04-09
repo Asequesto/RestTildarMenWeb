@@ -23,6 +23,8 @@ public class Translator extends User {
 
     private double rating = 5.0;
     private int reviews = 0;
+    private String profileImageUrl;
+    private String videoUrl;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availability;
@@ -55,10 +57,10 @@ public class Translator extends User {
     private Location location;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Video videoGreeting;
+    private Image image;
 
-    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
+    @ElementCollection
+    private List<String> projectUrls = new ArrayList<>();
 
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkExperience> workExperiences;

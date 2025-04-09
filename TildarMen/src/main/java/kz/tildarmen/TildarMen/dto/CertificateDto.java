@@ -6,6 +6,7 @@ import lombok.Data;
 public class CertificateDto {
 
     private String title;
+    private String certificateUrl;
     private Long year;
 
 }
