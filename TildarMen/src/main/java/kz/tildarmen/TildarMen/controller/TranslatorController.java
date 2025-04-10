@@ -87,9 +87,10 @@ public class TranslatorController {
 
     @PostMapping("/{id}/education")
     public ResponseEntity<ApiResponse> createEducation(@PathVariable Long id,
-                                                       @RequestBody UploadEducationRequest request){
+                                                       @RequestParam MultipartFile file,
+                                                       @RequestPart UploadEducationRequest request){
         try {
-            EducationDto education = educationService.addEducation(id, request);
+            EducationDto education = educationService.addEducation(id, file, request);
             return ResponseEntity.ok(new ApiResponse("Successfully created education", education));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
@@ -98,16 +99,17 @@ public class TranslatorController {
 
     @PostMapping("/{id}/certificate")
     public ResponseEntity<ApiResponse> createCertificate(@PathVariable Long id,
-                                                         @RequestBody UploadCertificateRequest request){
+                                                         @RequestParam MultipartFile file,
+                                                         @RequestPart UploadCertificateRequest request){
         try {
-            CertificateDto certificate = certificateService.addCertificate(id, request);
+            CertificateDto certificate = certificateService.addCertificate(id, file, request);
             return ResponseEntity.ok(new ApiResponse("Successfully created certificate", certificate));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
     }
 
-    @PutMapping("/{id}/profile-image")
+    @PostMapping("/{id}/profile-image")
     public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long id,
                                                           @RequestParam MultipartFile file) {
 
@@ -119,6 +121,33 @@ public class TranslatorController {
                         .body(new ApiResponse("Error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/project")
+    public ResponseEntity<ApiResponse> uploadProject(@PathVariable Long id,
+                                                     @RequestParam MultipartFile file) {
+
+        try {
+            String url = imageService.uploadFile(id, file, "project");
+            return ResponseEntity.ok(new ApiResponse("Success", url));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{id}/video")
+    public ResponseEntity<ApiResponse> uploadVideo(@PathVariable Long id,
+                                                   @RequestParam MultipartFile file) {
+        try {
+            String url = imageService.uploadFile(id, file, "video");
+            return ResponseEntity.ok(new ApiResponse("Success", url));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                     body(new ApiResponse("Error", e.getMessage()));
         }
     }
@@ -170,18 +199,6 @@ public class TranslatorController {
         }
     }
 
-    @PutMapping("/{id}/video")
-    public ResponseEntity<ApiResponse> uploadVideo(@PathVariable Long id,
-                                                     @RequestParam MultipartFile file) {
-        try {
-            String url = imageService.uploadFile(id, file, "video");
-            return ResponseEntity.ok(new ApiResponse("Success", url));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
-                    body(new ApiResponse("Error", e.getMessage()));
-        }
-    }
-
     @PutMapping("/{id}/language")
     public ResponseEntity<ApiResponse> updateTranslatorLanguage(@PathVariable Long id, @RequestParam String language){
         try {
@@ -226,28 +243,13 @@ public class TranslatorController {
         }
     }
 
-    @PutMapping("/{id}/project")
-    public ResponseEntity<ApiResponse> uploadProject(@PathVariable Long id,
-                                                          @RequestParam MultipartFile file) {
-
-        try {
-            String url = imageService.uploadFile(id, file, "project");
-            return ResponseEntity.ok(new ApiResponse("Success", url));
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
-                    body(new ApiResponse("Error", e.getMessage()));
-        }
-    }
-
-
     @PutMapping("/{id}/education/{educationId}")
     public ResponseEntity<ApiResponse> updateEducation(@PathVariable Long id,
                                                        @PathVariable Long educationId,
-                                                       @RequestBody UploadEducationRequest request){
+                                                       @RequestParam MultipartFile file,
+                                                       @RequestPart UploadEducationRequest request){
         try {
-            EducationDto education = educationService.updateEducation(id, educationId, request);
+            EducationDto education = educationService.updateEducation(id, educationId, file, request);
             return ResponseEntity.ok(new ApiResponse("Successfully updated education", education));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
@@ -272,10 +274,31 @@ public class TranslatorController {
     @PutMapping("/{id}/certificate/{certificateId}")
     public ResponseEntity<ApiResponse> updateCertificate(@PathVariable Long id,
                                                          @PathVariable Long certificateId,
-                                                         @RequestBody UploadCertificateRequest request){
+                                                         @RequestParam MultipartFile file,
+                                                         @RequestPart UploadCertificateRequest request){
         try {
-            CertificateDto certificate = certificateService.updateCertificate(id, certificateId, request);
+            CertificateDto certificate = certificateService.updateCertificate(id, certificateId, file, request);
             return ResponseEntity.ok(new ApiResponse("Successfully updated certificate", certificate));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/video")
+    public ResponseEntity<ApiResponse> deleteVideo(@PathVariable Long id){
+        try {
+            imageService.deleteVideo(id);
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted video", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/profile-image")
+    public ResponseEntity<ApiResponse> deleteProfileImage(@PathVariable Long id){
+        try {
+            imageService.deleteProfileImage(id);
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted profile image", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
@@ -311,6 +334,19 @@ public class TranslatorController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
+    }
+
+    @DeleteMapping("/{id}/project/{projectId}")
+    public ResponseEntity<ApiResponse> deleteProject(@PathVariable Long id, @PathVariable int projectId){
+        try {
+            Translator translator = translatorService.getTranslatorById(id);
+            imageService.deleteImage(translator.getProjectUrls().get(projectId - 1));
+            translator.getProjectUrls().remove(projectId - 1);
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted project", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+
     }
 
     @DeleteMapping("/{id}/delete")

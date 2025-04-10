@@ -1,7 +1,6 @@
 package kz.tildarmen.TildarMen.dto;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class EducationDto {
@@ -10,6 +9,5 @@ public class EducationDto {
     private String degreeUrl;
     private String university;
     private Long graduationYear;
-    private MultipartFile degreeFile;
 
 }

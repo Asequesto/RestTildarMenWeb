@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.services;
 
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -58,8 +59,7 @@ public class ImageService {
         BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(file.getOriginalFilename()));
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
         storage.create(blobInfo, file.getBytes());
-        String url = String.format("https://storage.googleapis.com/%s/%s", "your-bucket",
-                "translator-profile-photos/" + file.getOriginalFilename());
+        String url = String.format("https://storage.googleapis.com/%s/", "tildarmen_bucket" + file.getOriginalFilename());
         if(type != null) uploadUrl(id, url, type);
 
         return url;
@@ -77,6 +77,30 @@ public class ImageService {
         if(type.equals("project")){
             translator.getProjectUrls().add(url);
         }
+        translatorRepository.save(translator);
+    }
+
+    public void deleteImage(String fileName){
+        Blob blob = storage.get(BlobId.of("tildarmen_bucket",
+                fileName.substring(fileName.lastIndexOf("/") + 1)));
+        if(blob != null && blob.exists()){
+            blob.delete();
+        }else{
+            throw new RuntimeException("File not found " + fileName);
+        }
+    }
+
+    public void deleteVideo(Long id) {
+        Translator translator = translatorService.getTranslatorById(id);
+        deleteImage(translator.getVideoUrl());
+        translator.setVideoUrl(null);
+        translatorRepository.save(translator);
+    }
+
+    public void deleteProfileImage(Long id) {
+        Translator translator = translatorService.getTranslatorById(id);
+        deleteImage(translator.getProfileImageUrl());
+        translator.setProfileImageUrl(null);
         translatorRepository.save(translator);
     }
 }
