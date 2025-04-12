@@ -3,16 +3,19 @@ package kz.tildarmen.TildarMen.config;
 import kz.tildarmen.TildarMen.model.ServiceTypes;
 import kz.tildarmen.TildarMen.repository.ServiceTypesRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import org.slf4j.Logger;
 
 @Component
 @RequiredArgsConstructor
 public class ServiceTypesSeeder implements CommandLineRunner {
 
     private final ServiceTypesRepository serviceTypesRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ServiceTypesSeeder.class);
 
     @Override
     public void run(String... args) {
@@ -31,9 +34,9 @@ public class ServiceTypesSeeder implements CommandLineRunner {
             );
 
             serviceTypesRepository.saveAll(services);
-            System.out.println("✅ Service Types Seeded Successfully!");
+            logger.info("✅ Service types seeded successfully.");
         } else {
-            System.out.println("✅ Service Types already exist. Skipping seeding.");
+            logger.info("✅ Service types are already saved.");
         }
     }
 }
