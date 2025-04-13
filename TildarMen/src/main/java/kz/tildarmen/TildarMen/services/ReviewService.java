@@ -30,7 +30,7 @@ public class ReviewService {
 
     public List<ReviewDto> getAllTranslatorReview(Long translatorId) {
         Translator translator = translatorService.getTranslatorById(translatorId);
-        return reviewMapper.toDtoList(reviewRepository.findAllByTranslator(translator));
+        return reviewMapper.toDtoList(reviewRepository.findAllByTranslatorOrderByCreationDateDesc(translator));
     }
 
     public ReviewDto createTranslatorReview(Long translatorId, Long userId, CreateReviewRequest request) {

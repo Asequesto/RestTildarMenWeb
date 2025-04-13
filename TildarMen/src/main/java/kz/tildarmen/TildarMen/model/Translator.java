@@ -56,9 +56,6 @@ public class Translator extends User {
     @ManyToOne
     private Location location;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Image image;
-
     @ElementCollection
     private List<String> projectUrls = new ArrayList<>();
 

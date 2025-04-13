@@ -109,22 +109,6 @@ public class TranslatorController {
         }
     }
 
-    @PostMapping("/{id}/profile-image")
-    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long id,
-                                                          @RequestParam MultipartFile file) {
-
-        try {
-            ImageDto profileImage = imageService.uploadFile(id, file);
-            return ResponseEntity.ok(new ApiResponse("Success", profileImage));
-        } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ApiResponse("Error", e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).
-                    body(new ApiResponse("Error", e.getMessage()));
-        }
-    }
-
     @PostMapping("/{id}/project")
     public ResponseEntity<ApiResponse> uploadProject(@PathVariable Long id,
                                                      @RequestParam MultipartFile file) {
@@ -256,6 +240,27 @@ public class TranslatorController {
         }
     }
 
+    @PutMapping("/{id}/profile-image")
+    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long id,
+                                                          @RequestParam MultipartFile file) {
+
+        try {
+            Translator translator = translatorService.getTranslatorById(id);
+            if(translator.getProfileImageUrl() != null){
+                imageService.deleteImage(translator.getProfileImageUrl());
+                translator.setProfileImageUrl(null);
+            }
+            String url = imageService.uploadFile(id, file, "profile-image");
+            return ResponseEntity.ok(new ApiResponse("Success", url));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
     @PutMapping("/{id}/degree")
     public ResponseEntity<ApiResponse> uploadDegree(@PathVariable Long id,
                                                      @RequestParam MultipartFile file) {
@@ -287,18 +292,10 @@ public class TranslatorController {
     @DeleteMapping("/{id}/video")
     public ResponseEntity<ApiResponse> deleteVideo(@PathVariable Long id){
         try {
-            imageService.deleteVideo(id);
+            Translator translator = translatorService.getTranslatorById(id);
+            imageService.deleteImage(translator.getVideoUrl());
+            translator.setVideoUrl(null);
             return ResponseEntity.ok(new ApiResponse("Successfully deleted video", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
-        }
-    }
-
-    @DeleteMapping("/{id}/profile-image")
-    public ResponseEntity<ApiResponse> deleteProfileImage(@PathVariable Long id){
-        try {
-            imageService.deleteProfileImage(id);
-            return ResponseEntity.ok(new ApiResponse("Successfully deleted profile image", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }

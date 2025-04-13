@@ -14,6 +14,8 @@ public class TranslatorDto {
     private String professionalTitle;
     private double rating;
     private int reviews;
+    private String profileImageUrl;
+    private String videoUrl;
     private AvailabilityStatus availability;
     private ImageDto image;
     private List<String> projectUrls;
