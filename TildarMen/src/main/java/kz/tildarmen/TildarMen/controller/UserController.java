@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestParam(required = false) String availability,
                                                               @RequestBody(required = false) SearchTranslatorsRequest request) {
 
-        List<UserDto> translators = translatorService
+        List<SearchTranslatorDto> translators = translatorService
                 .filterTranslators(availability, request);
         return ResponseEntity.ok(new ApiResponse("Success", translators));
     }

@@ -24,7 +24,7 @@ public interface TranslatorRepository extends JpaRepository<Translator, Long> {
             "AND (:serviceTypes IS NULL OR st.id IN :serviceTypes) " +
             "AND (:specializations IS NULL OR sp.id IN :specializations) " +
             "AND (:location IS NULL OR loc.id IN :location)")
-    List<User> filterTranslators(
+    List<Translator> filterTranslators(
             @Param("availability") AvailabilityStatus availability,
             @Param("languages") List<Long> languages,
             @Param("serviceTypes") List<Long> serviceTypes,
