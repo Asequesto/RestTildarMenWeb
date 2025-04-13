@@ -17,6 +17,7 @@ public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
 
+    @PreAuthorize("hasAnyAuthority('TRANSLATOR')")
     @PostMapping("/{translatorId}/send/{jobId}")
     public ResponseEntity<ApiResponse> sendJobApplication(@PathVariable Long translatorId,
                                                           @PathVariable Long jobId) {
