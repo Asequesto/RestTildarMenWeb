@@ -8,16 +8,15 @@ import kz.tildarmen.TildarMen.model.Employer;
 import kz.tildarmen.TildarMen.requests.GetEmployerProfile;
 import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
-import kz.tildarmen.TildarMen.services.EmployerService;
-import kz.tildarmen.TildarMen.services.JobApplicationService;
-import kz.tildarmen.TildarMen.services.JobRequestService;
-import kz.tildarmen.TildarMen.services.JobService;
+import kz.tildarmen.TildarMen.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,6 +29,7 @@ public class EmployerController {
     private final EmployerService employerService;
     private final JobApplicationService jobApplicationService;
     private final JobRequestService jobRequestService;
+    private final ImageService imageService;
 
     @GetMapping("/{id}/profile")
     public ResponseEntity<ApiResponse> getEmployerProfile(@PathVariable Long id) {
@@ -83,6 +83,27 @@ public class EmployerController {
             return ResponseEntity.ok(new ApiResponse("Success", translators));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/profile-image")
+    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long id,
+                                                          @RequestParam MultipartFile file) {
+
+        try {
+            Employer employer = employerService.getEmployerById(id);
+            if(employer.getProfileImageUrl() != null){
+                imageService.deleteImage(employer.getProfileImageUrl());
+                employer.setProfileImageUrl(null);
+            }
+            String url = imageService.uploadFileEmployer(id, file);
+            return ResponseEntity.ok(new ApiResponse("Success", url));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body(new ApiResponse("Error", e.getMessage()));
         }
     }
 

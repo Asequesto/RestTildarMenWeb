@@ -12,6 +12,7 @@ public interface ReviewMapper {
 
     @Mapping(source = "user.firstName", target = "firstName")
     @Mapping(source = "user.lastName", target = "lastName")
+    @Mapping(source = "user.profileImageUrl", target = "profileImageUrl")
     ReviewDto toDto(Review review);
 
     List<ReviewDto> toDtoList(List<Review> reviews);

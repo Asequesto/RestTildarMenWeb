@@ -23,7 +23,6 @@ public class Translator extends User {
 
     private double rating = 5.0;
     private int reviews = 0;
-    private String profileImageUrl;
     private String videoUrl;
 
     @Enumerated(EnumType.STRING)

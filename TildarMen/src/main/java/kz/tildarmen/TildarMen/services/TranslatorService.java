@@ -1,10 +1,12 @@
 package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.dto.SearchTranslatorDto;
 import kz.tildarmen.TildarMen.dto.TranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.enums.AvailabilityStatus;
 import kz.tildarmen.TildarMen.enums.Role;
+import kz.tildarmen.TildarMen.mapper.SearchTranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.*;
@@ -30,6 +32,7 @@ public class TranslatorService {
     private final ServiceTypesService serviceTypesService;
     private final SpecializationService specializationService;
     private final LocationService locationService;
+    private final SearchTranslatorMapper searchTranslatorMapper;
 
 
     public Translator getTranslatorById(Long id) {
@@ -74,9 +77,9 @@ public class TranslatorService {
                         languages, services, specializations, locations));
     }
 
-    public List<UserDto> searchTranslatorsByName(String username) {
-        List<User> users = translatorRepository.searchTranslatorsByUsername(username.toLowerCase());
-        return userMapper.toDtoList(users);
+    public List<SearchTranslatorDto> searchTranslatorsByName(String username) {
+        List<Translator> translators = translatorRepository.searchTranslatorsByUsername(username.toLowerCase());
+        return searchTranslatorMapper.toDtoList(translators);
     }
 
     public UserDto updateTranslatorAccountSettings(UpdateUserRequest request, Long id) {

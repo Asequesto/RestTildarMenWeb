@@ -36,5 +36,5 @@ public interface TranslatorRepository extends JpaRepository<Translator, Long> {
             "WHERE LOWER(t.firstName) " +
             "LIKE LOWER(CONCAT('%', :username, '%')) " +
             "OR LOWER(t.lastName) LIKE LOWER(CONCAT('%', :username, '%'))")
-    List<User> searchTranslatorsByUsername(String username);
+    List<Translator> searchTranslatorsByUsername(String username);
 }

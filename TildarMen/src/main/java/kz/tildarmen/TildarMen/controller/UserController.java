@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.controller;
 
+import kz.tildarmen.TildarMen.dto.SearchTranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.User;
@@ -38,8 +39,8 @@ public class UserController {
 
     @GetMapping("/translators/search")
     public ResponseEntity<ApiResponse> searchTranslators(@RequestParam String username) {
-        List<UserDto> users = translatorService.searchTranslatorsByName(username);
-        return ResponseEntity.ok(new ApiResponse("Success", users));
+        List<SearchTranslatorDto> translators = translatorService.searchTranslatorsByName(username);
+        return ResponseEntity.ok(new ApiResponse("Success", translators));
     }
 
     @GetMapping("/employers/search")

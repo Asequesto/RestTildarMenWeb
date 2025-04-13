@@ -10,6 +10,8 @@ import java.util.Set;
 public class TranslatorDto {
 
 
+    private String firstName;
+    private String lastName;
     private String introduction;
     private String professionalTitle;
     private double rating;

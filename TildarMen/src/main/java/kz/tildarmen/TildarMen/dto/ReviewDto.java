@@ -11,6 +11,7 @@ public class ReviewDto {
     private String firstName;
     private String lastName;
     private String comment;
+    private String profileImageUrl;
     private int rating;
     private LocalDateTime creationDate;
 

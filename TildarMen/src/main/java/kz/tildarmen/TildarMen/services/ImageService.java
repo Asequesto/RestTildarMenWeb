@@ -5,6 +5,7 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.model.Employer;
 import kz.tildarmen.TildarMen.model.Translator;
 import kz.tildarmen.TildarMen.repository.TranslatorRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ImageService {
     private final TranslatorService translatorService;
     private final Storage storage;
     private final TranslatorRepository translatorRepository;
+    private final EmployerService employerService;
 
     public String uploadFile(Long id, MultipartFile file, String type) throws IOException {
         BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(file.getOriginalFilename()));
@@ -32,6 +34,17 @@ public class ImageService {
 
         return url;
 
+    }
+
+    public String uploadFileEmployer(Long id, MultipartFile file) throws IOException {
+        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(file.getOriginalFilename()));
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
+        storage.create(blobInfo, file.getBytes());
+        String url = String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
+        Employer employer = employerService.getEmployerById(id);
+        employer.setProfileImageUrl(url);
+
+        return url;
     }
 
     public void uploadUrl(Long id, String url, String type) {
