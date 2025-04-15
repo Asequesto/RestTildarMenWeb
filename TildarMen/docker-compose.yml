@@ -45,6 +45,8 @@ services:
       - mongodb
     ports:
       - "8080:8080"
+    volumes:
+      - ./cloudAuth.json:/app/credentials/cloudAuth.json
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://tildarmen_mysql:3306/tildarmennewdb
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
@@ -62,6 +64,8 @@ services:
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
       SPRING_PROPERTIES_MAIL_SMTP_SSL_TRUST: smtp.gmail.com
+
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials/cloudAuth.json
 
 volumes:
   mysql_data:
