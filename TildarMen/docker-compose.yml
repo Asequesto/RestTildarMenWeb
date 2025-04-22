@@ -3,28 +3,34 @@ services:
     image: mysql:8.0
     container_name: tildarmen_mysql
     restart: always
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE:      ${MYSQL_DATABASE}
+      MYSQL_USER:          ${MYSQL_USER}
+      MYSQL_PASSWORD:      ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
   mongodb:
     image: mongo
-    container_name: mongo_db
+    container_name: mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${SPRING_DATA_MONGODB_DATABASE}
+    ports:
+      - "27017:27017"
     volumes:
       - mongo:/data/db
     networks:
       default:
         aliases:
+          - mongodb
           - mongo
+
 
   mongo-express:
     image: mongo-express
@@ -35,8 +41,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER:       mongo
+      ME_CONFIG_MONGODB_PORT:         27017
       ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -52,24 +58,25 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./cloudAuth.json:/app/credentials/cloudAuth.json
+      - ./cloudAuth.json:/app/credentials/cloudAuth.json:ro
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://tildarmen_mysql:3306/tildarmennewdb
+      SPRING_DATASOURCE_URL:      jdbc:mysql://tildarmen_mysql:3306/${MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
-      SPRING_DATA_MONGODB_HOST: mongo_db
-      SPRING_DATA_MONGODB_PORT: 27017
-      SPRING_DATA_MONGODB_DATABASE: messages_db
-      SPRING_DATA_MONGODB_USERNAME: root
-      SPRING_DATA_MONGODB_PASSWORD: root
 
-      SPRING_MAIL_HOST: smtp.gmail.com
-      SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: ${EMAIL}
-      SPRING_MAIL_PASSWORD: ${PASSWORD}
+      SPRING_DATA_MONGODB_HOST:      mongodb
+      SPRING_DATA_MONGODB_PORT:     27017
+      SPRING_DATA_MONGODB_DATABASE: ${SPRING_DATA_MONGODB_DATABASE}
+      SPRING_DATA_MONGODB_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      SPRING_DATA_MONGODB_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+
+      SPRING_MAIL_HOST:                      smtp.gmail.com
+      SPRING_MAIL_PORT:                      587
+      SPRING_MAIL_USERNAME:                  ${EMAIL}
+      SPRING_MAIL_PASSWORD:                  ${PASSWORD}
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
-      SPRING_PROPERTIES_MAIL_SMTP_SSL_TRUST: smtp.gmail.com
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST:       smtp.gmail.com
 
       GOOGLE_APPLICATION_CREDENTIALS: /app/credentials/cloudAuth.json
 
