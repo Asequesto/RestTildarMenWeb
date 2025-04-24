@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class EmployerDto {
 
+    private String profileImageUrl;
     private String introduction;
     private Location location;
 

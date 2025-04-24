@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class JobDescDto {
 
+    private Long id;
     private String title;
     private Long price;
     private LocalDateTime endDate;
