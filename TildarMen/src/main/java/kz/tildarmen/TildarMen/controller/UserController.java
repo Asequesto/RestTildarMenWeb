@@ -98,7 +98,7 @@ public class UserController {
             if(res.equals("Success")) {
                 return ResponseEntity.ok(new ApiResponse(res, null));
             }
-            return ResponseEntity.ok(new ApiResponse(res, null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", res));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
