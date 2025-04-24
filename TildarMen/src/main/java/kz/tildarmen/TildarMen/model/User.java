@@ -29,6 +29,9 @@ public class User implements UserDetails {
     private String password;
     private String profileImageUrl;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    ResetPasswordToken token;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

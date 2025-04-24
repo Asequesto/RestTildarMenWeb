@@ -1,11 +1,14 @@
 package kz.tildarmen.TildarMen.controller;
 
+import jakarta.mail.MessagingException;
 import kz.tildarmen.TildarMen.dto.SearchTranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
+import kz.tildarmen.TildarMen.requests.ResetPasswordRequest;
 import kz.tildarmen.TildarMen.requests.SearchTranslatorsRequest;
+import kz.tildarmen.TildarMen.requests.VerifyCodeRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.EmployerService;
 import kz.tildarmen.TildarMen.services.TranslatorService;
@@ -73,6 +76,42 @@ public class UserController {
         List<SearchTranslatorDto> translators = translatorService
                 .filterTranslators(availability, request);
         return ResponseEntity.ok(new ApiResponse("Success", translators));
+    }
+
+    @PostMapping("/send-code")
+    public ResponseEntity<ApiResponse> sendCode(@RequestParam String email) {
+        try {
+            userService.sendVerificationEmail(email);
+            return ResponseEntity.ok(new ApiResponse("Success", null));
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<ApiResponse> verifyCode(@RequestBody VerifyCodeRequest request) {
+        try {
+            String res = userService.verifyCode(request.getCode(), request.getEmail());
+            if(res.equals("Success")) {
+                return ResponseEntity.ok(new ApiResponse(res, null));
+            }
+            return ResponseEntity.ok(new ApiResponse(res, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            userService.resetPassword(request);
+            return ResponseEntity.ok(new ApiResponse("Success", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
     }
 
 
