@@ -4,6 +4,7 @@ import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.TranslatorSettingsMapper;
 import kz.tildarmen.TildarMen.model.Translator;
+import kz.tildarmen.TildarMen.repository.TranslatorRepository;
 import kz.tildarmen.TildarMen.requests.*;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.*;
@@ -32,6 +33,7 @@ public class TranslatorController {
     private final JobApplicationService jobApplicationService;
     private final JobRequestService jobRequestService;
     private final TranslatorSettingsMapper translatorSettingsMapper;
+    private final TranslatorRepository translatorRepository;
 
 
     @GetMapping("/{id}/settings")
@@ -295,7 +297,40 @@ public class TranslatorController {
             Translator translator = translatorService.getTranslatorById(id);
             imageService.deleteImage(translator.getVideoUrl());
             translator.setVideoUrl(null);
+            translatorRepository.save(translator);
             return ResponseEntity.ok(new ApiResponse("Successfully deleted video", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/language")
+    public ResponseEntity<ApiResponse> deleteTranslatorLanguage(@PathVariable Long id, @RequestParam String language){
+        try {
+            translatorService.deleteLanguage(id, language);
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted language", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/service")
+    public ResponseEntity<ApiResponse> deleteTranslatorService(@PathVariable Long id,
+                                                               @RequestParam String service){
+        try {
+            translatorService.deleteService(id, service);
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted service", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/specialization")
+    public ResponseEntity<ApiResponse> deleteTranslatorSpecialization(@PathVariable Long id,
+                                                                      @RequestParam String specialization){
+        try {
+            translatorService.deleteSpecialization(id, specialization);
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted specialization", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }

@@ -142,7 +142,7 @@ public class TranslatorService {
         ServiceTypes serviceTypes = serviceTypesService.getServiceTypesByName(service);
         Translator translator = getTranslatorById(id);
         if(serviceTypes == null) {
-            throw new RuntimeException("Language not found");
+            throw new RuntimeException("Service not found");
         }
         translator.getServiceTypes().add(serviceTypes);
         return translatorMapper.toDto(translatorRepository.save(translator));
@@ -152,10 +152,40 @@ public class TranslatorService {
         Specialization newSpecialization = specializationService.getSpecializationByName(specialization);
         Translator translator = getTranslatorById(id);
         if(newSpecialization == null) {
-            throw new RuntimeException("Language not found");
+            throw new RuntimeException("Specialization not found");
         }
         translator.getSpecializations().add(newSpecialization);
         return translatorMapper.toDto(translatorRepository.save(translator));
 
+    }
+
+    public void deleteLanguage(Long id, String language) {
+        Translator translator = getTranslatorById(id);
+        Language deleteLanguage = languageService.getLanguageByName(language);
+        boolean isThere = translator.getLanguages().remove(deleteLanguage);
+        if(!isThere) {
+            throw new RuntimeException("Language not found");
+        }
+        translatorRepository.save(translator);
+    }
+
+    public void deleteService(Long id, String service) {
+        Translator translator = getTranslatorById(id);
+        ServiceTypes serviceTypes = serviceTypesService.getServiceTypesByName(service);
+        boolean isThere = translator.getServiceTypes().remove(serviceTypes);
+        if(!isThere) {
+            throw new RuntimeException("Service not found");
+        }
+        translatorRepository.save(translator);
+    }
+
+    public void deleteSpecialization(Long id, String specialization) {
+        Translator translator = getTranslatorById(id);
+        Specialization deleteSpecialization = specializationService.getSpecializationByName(specialization);
+        boolean isThere = translator.getSpecializations().remove(deleteSpecialization);
+        if(!isThere) {
+            throw new RuntimeException("Specialization not found");
+        }
+        translatorRepository.save(translator);
     }
 }
