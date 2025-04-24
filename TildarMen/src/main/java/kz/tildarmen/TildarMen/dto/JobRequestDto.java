@@ -11,5 +11,6 @@ public class JobRequestDto {
 
     private RequestStatus status;
     private LocalDateTime requestedAt;
+    private JobDescDto job;
 
 }
