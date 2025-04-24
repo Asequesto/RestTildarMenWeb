@@ -134,6 +134,9 @@ public class TranslatorService {
         if(language == null) {
             throw new RuntimeException("Language not found");
         }
+        if(translator.getLanguages().contains(language)) {
+            throw new RuntimeException("Language already exists");
+        }
         translator.getLanguages().add(language);
         return translatorMapper.toDto(translatorRepository.save(translator));
     }
@@ -144,6 +147,9 @@ public class TranslatorService {
         if(serviceTypes == null) {
             throw new RuntimeException("Service not found");
         }
+        if(translator.getServiceTypes().contains(serviceTypes)) {
+            throw new RuntimeException("Service already exists");
+        }
         translator.getServiceTypes().add(serviceTypes);
         return translatorMapper.toDto(translatorRepository.save(translator));
     }
@@ -153,6 +159,9 @@ public class TranslatorService {
         Translator translator = getTranslatorById(id);
         if(newSpecialization == null) {
             throw new RuntimeException("Specialization not found");
+        }
+        if(translator.getSpecializations().contains(newSpecialization)) {
+            throw new RuntimeException("Specialization already exists");
         }
         translator.getSpecializations().add(newSpecialization);
         return translatorMapper.toDto(translatorRepository.save(translator));
