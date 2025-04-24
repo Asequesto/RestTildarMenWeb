@@ -78,7 +78,7 @@ public class LanguageSeeder implements CommandLineRunner {
                     new Language(null, "Maori", "mi"),
                     new Language(null, "Marathi", "mr"),
                     new Language(null, "Mongolian", "mn"),
-                    new Language(null, "Myanmar (Burmese)", "my"),
+                    new Language(null, "Myanmar", "my"),
                     new Language(null, "Nepali", "ne"),
                     new Language(null, "Norwegian", "no"),
                     new Language(null, "Odia (Oriya)", "or"),
