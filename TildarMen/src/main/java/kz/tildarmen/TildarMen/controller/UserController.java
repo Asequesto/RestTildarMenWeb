@@ -2,7 +2,9 @@ package kz.tildarmen.TildarMen.controller;
 
 import jakarta.mail.MessagingException;
 import kz.tildarmen.TildarMen.dto.SearchTranslatorDto;
+import kz.tildarmen.TildarMen.dto.TranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
+import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
@@ -29,6 +31,7 @@ public class UserController {
     private final TranslatorService translatorService;
     private final EmployerService employerService;
     private final UserMapper userMapper;
+    private final TranslatorMapper translatorMapper;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
@@ -44,6 +47,16 @@ public class UserController {
     public ResponseEntity<ApiResponse> searchTranslators(@RequestParam String username) {
         List<SearchTranslatorDto> translators = translatorService.searchTranslatorsByName(username);
         return ResponseEntity.ok(new ApiResponse("Success", translators));
+    }
+
+    @GetMapping("/translator/{id}/profile")
+    public ResponseEntity<ApiResponse> getTranslatorProfile(@PathVariable Long id) {
+        try {
+            TranslatorDto translator = translatorMapper.toDto(translatorService.getTranslatorById(id));
+            return ResponseEntity.ok(new ApiResponse("Success", translator));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
     }
 
     @GetMapping("/employers/search")
@@ -70,11 +83,10 @@ public class UserController {
     }
 
     @PostMapping("/translators/filter")
-    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestParam(required = false) String availability,
-                                                              @RequestBody(required = false) SearchTranslatorsRequest request) {
+    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestBody(required = false) SearchTranslatorsRequest request) {
 
         List<SearchTranslatorDto> translators = translatorService
-                .filterTranslators(availability, request);
+                .filterTranslators(request);
         return ResponseEntity.ok(new ApiResponse("Success", translators));
     }
 
