@@ -1,6 +1,7 @@
 package kz.tildarmen.TildarMen.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +25,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "First name must not be blank")
     private String firstName;
+
+    @NotBlank(message = "Last name must not be blank")
     private String lastName;
     private String email;
     private String phoneNumber;
