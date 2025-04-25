@@ -56,8 +56,7 @@ public class TranslatorService {
 
     }
 
-    public List<SearchTranslatorDto> filterTranslators(String availability,
-                                                 SearchTranslatorsRequest request) {
+    public List<SearchTranslatorDto> filterTranslators(SearchTranslatorsRequest request) {
         List<Long> locations = locationService.getAllByName(request.getLocations())
                 .stream().map(Location::getId).toList();
         List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
@@ -67,11 +66,11 @@ public class TranslatorService {
         List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
                 .stream().map(Specialization::getId).toList();
         AvailabilityStatus status =  null;
-        if(request.getLocations() == null) locations = null;
-        if(request.getServiceTypes() == null) services = null;
-        if(request.getSpecializations() == null) specializations = null;
-        if(request.getLanguages() == null) languages = null;
-        if(availability != null) status = AvailabilityStatus.valueOf(availability.toUpperCase());
+        if(request.getLocations() == null || request.getLocations().isEmpty()) locations = null;
+        if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()) services = null;
+        if(request.getSpecializations() == null || request.getSpecializations().isEmpty()) specializations = null;
+        if(request.getLanguages() == null || request.getLanguages().isEmpty()) languages = null;
+        if(request.getAvailability() != null) status = AvailabilityStatus.valueOf(request.getAvailability().toUpperCase());
         return searchTranslatorMapper.toDtoList(
                 translatorRepository.filterTranslators(status,
                         languages, services, specializations, locations));

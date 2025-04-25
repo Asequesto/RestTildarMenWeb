@@ -69,10 +69,10 @@ public class JobService {
                 .stream().map(Language::getId).toList();
         List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
                 .stream().map(Specialization::getId).toList();
-        if(request.getLocations() == null) locations = null;
-        if(request.getServiceTypes() == null) services = null;
-        if(request.getSpecializations() == null) specializations = null;
-        if(request.getLanguages() == null) languages = null;
+        if(request.getLocations() == null || request.getLocations().isEmpty()) locations = null;
+        if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()) services = null;
+        if(request.getSpecializations() == null || request.getSpecializations().isEmpty()) specializations = null;
+        if(request.getLanguages() == null || request.getLanguages().isEmpty()) languages = null;
         return jobMapper.toDtoList(jobRepository
                 .filterJobs(languages, services, specializations, locations,
                         request.getStartDate(), request.getEndDate()));
