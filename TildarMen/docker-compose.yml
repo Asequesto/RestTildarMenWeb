@@ -60,7 +60,7 @@ services:
     volumes:
       - ./cloudAuth.json:/app/credentials/cloudAuth.json:ro
     environment:
-      SPRING_DATASOURCE_URL:      jdbc:mysql://tildarmen_mysql:3306/${tildarmennewdb}
+      SPRING_DATASOURCE_URL:      jdbc:mysql://tildarmen_mysql:3306/${MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
 
