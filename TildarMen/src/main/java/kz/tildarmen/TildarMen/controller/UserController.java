@@ -6,11 +6,10 @@ import kz.tildarmen.TildarMen.dto.TranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
+import kz.tildarmen.TildarMen.model.EmailVerifyToken;
 import kz.tildarmen.TildarMen.model.User;
-import kz.tildarmen.TildarMen.requests.CreateUserRequest;
-import kz.tildarmen.TildarMen.requests.ResetPasswordRequest;
-import kz.tildarmen.TildarMen.requests.SearchTranslatorsRequest;
-import kz.tildarmen.TildarMen.requests.VerifyCodeRequest;
+import kz.tildarmen.TildarMen.repository.EmailVerifyTokenRepository;
+import kz.tildarmen.TildarMen.requests.*;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.EmployerService;
 import kz.tildarmen.TildarMen.services.TranslatorService;
@@ -32,6 +31,7 @@ public class UserController {
     private final EmployerService employerService;
     private final UserMapper userMapper;
     private final TranslatorMapper translatorMapper;
+    private final EmailVerifyTokenRepository emailVerifyTokenRepository;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
@@ -68,6 +68,20 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addUser(@RequestBody CreateUserRequest request) {
         UserDto user;
+        EmailVerifyToken token = emailVerifyTokenRepository.findByEmail(request.getEmail());
+        if(token == null || token.getToken() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse("Email verify token not found, Fail!", request.getEmail()));
+        }
+        if(!(token.getToken().equals(request.getCode()))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse("Email verify code is incorrect!", request.getEmail()));
+        }
+        if(request.getPhoneNumber() == null || request.getPhoneNumber().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse("Phone number is empty or null!", "phone: " + request.getPhoneNumber()));
+        }
+
         if (request.getRole().equalsIgnoreCase("translator")) {
             user = translatorService.createTranslator(request);
         } else if (request.getRole().equalsIgnoreCase("employer")) {
@@ -79,6 +93,7 @@ public class UserController {
         if(user == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("User Already Exists", null));
         }
+        emailVerifyTokenRepository.delete(token);
         return ResponseEntity.ok(new ApiResponse("Success", user));
     }
 
@@ -91,7 +106,7 @@ public class UserController {
     }
 
     @PostMapping("/send-code")
-    public ResponseEntity<ApiResponse> sendCode(@RequestParam String email) {
+    public ResponseEntity<ApiResponse> sendCode(@RequestPart String email) {
         try {
             userService.sendVerificationEmail(email);
             return ResponseEntity.ok(new ApiResponse("Success", null));
@@ -110,7 +125,7 @@ public class UserController {
             if(res.equals("Success")) {
                 return ResponseEntity.ok(new ApiResponse(res, null));
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", res));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", "res"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
