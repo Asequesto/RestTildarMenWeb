@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -77,6 +78,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse("Email verify code is incorrect!", request.getEmail()));
         }
+        Date now = new Date();
+        if(!(now.before(token.getExpiratyDate()))){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse("Email verify expired!", request.getEmail()));
+        }
         if(request.getPhoneNumber() == null || request.getPhoneNumber().isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse("Phone number is empty or null!", "phone: " + request.getPhoneNumber()));
@@ -105,10 +111,21 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse("Success", translators));
     }
 
+    @PostMapping("/send-val")
+    public ResponseEntity<ApiResponse> sendValCode(@RequestPart String email){
+        try {
+            userService.sendVerificationEmail(email);
+            return ResponseEntity.ok(new ApiResponse("Success", null));
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
     @PostMapping("/send-code")
     public ResponseEntity<ApiResponse> sendCode(@RequestPart String email) {
         try {
-            userService.sendVerificationEmail(email);
+            userService.sendResetEmail(email);
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
