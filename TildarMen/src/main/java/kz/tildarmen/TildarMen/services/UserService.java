@@ -169,7 +169,6 @@ public class UserService {
         Date now = new Date();
         if(now.before(token.getExpiryDate())){
             if(code.equals(token.getToken())){
-                resetPasswordTokenRepository.delete(token);
                 System.out.println("Deleted token");
                 return "Success";
             }
@@ -177,6 +176,12 @@ public class UserService {
         }
         return "Token expired";
 
+    }
+
+    public void deleteToken(String email){
+        User user = userRepository.findByEmail(email);
+        ResetPasswordToken token = resetPasswordTokenRepository.findByUser(user);
+        resetPasswordTokenRepository.delete(token);
     }
 
     public void resetPassword(ResetPasswordRequest request){
