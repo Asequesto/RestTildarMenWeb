@@ -79,6 +79,7 @@ public class UserController {
                     .body(new ApiResponse("Email verify code is incorrect!", request.getEmail()));
         }
         Date now = new Date();
+        System.out.println(now.before(token.getExpiratyDate()));
         if(!(now.before(token.getExpiratyDate()))){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse("Email verify expired!", request.getEmail()));

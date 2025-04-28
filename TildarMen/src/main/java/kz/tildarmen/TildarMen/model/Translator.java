@@ -84,7 +84,7 @@ public class Translator extends User {
         double totalRating = this.rating * this.reviews;
         this.reviews--;
         totalRating -= rating;
-        this.rating = totalRating / this.reviews;
+        if(this.reviews != 0) this.rating = totalRating / this.reviews;
     }
 
 }

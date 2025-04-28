@@ -27,6 +27,7 @@ public class EmployerService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final LocationService locationService;
+    private final ReviewService reviewService;
 
     public Employer getEmployerById(Long id) {
         return employerRepository.findById(id)
@@ -77,7 +78,14 @@ public class EmployerService {
     }
 
     public void deleteEmployerById(Long id) {
-        User user = getEmployerById(id);
-        userRepository.delete(user);
+        Employer employer = getEmployerById(id);
+
+        List<Review> reviews = employer.getReviewList();
+
+        for(Review review : reviews) {
+            reviewService.deleteTranslatorReview(review.getId());
+        }
+
+        userRepository.delete(employer);
     }
 }
