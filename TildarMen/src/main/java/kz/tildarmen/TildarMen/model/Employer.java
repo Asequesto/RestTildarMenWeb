@@ -23,4 +23,7 @@ public class Employer extends User{
 
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobRequest> jobRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
 }

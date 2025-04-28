@@ -126,6 +126,9 @@ public class StripeService {
                 )
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl("http://localhost:3000/payment-success/")
+                .setCancelUrl("http://localhost:3000/payment-cancel/")
+                .setClientReferenceId(translator.getId().toString())
+                .putMetadata("jobId", jobId.toString())
                 .build();
         RequestOptions requestOptions = RequestOptions.builder().setStripeAccount(stripeAccount.getStripeId()).build();
         Session session = client.checkout().sessions().create(params, requestOptions);

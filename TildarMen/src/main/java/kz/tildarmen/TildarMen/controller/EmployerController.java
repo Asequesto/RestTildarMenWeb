@@ -30,6 +30,7 @@ public class EmployerController {
     private final JobApplicationService jobApplicationService;
     private final JobRequestService jobRequestService;
     private final ImageService imageService;
+    private final TransactionService transactionService;
 
     @GetMapping("/{id}/profile")
     public ResponseEntity<ApiResponse> getEmployerProfile(@PathVariable Long id) {
@@ -81,6 +82,15 @@ public class EmployerController {
         try {
             List<JobTranslatorsDto> translators = jobService.getJobTranslators(id);
             return ResponseEntity.ok(new ApiResponse("Success", translators));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<ApiResponse> getAllEmployerTransactions(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new ApiResponse("Success", transactionService.getAllTransaction(id)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }

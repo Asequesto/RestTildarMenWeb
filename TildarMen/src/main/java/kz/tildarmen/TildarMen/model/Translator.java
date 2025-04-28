@@ -73,6 +73,9 @@ public class Translator extends User {
     @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobApplication> applications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "translator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
+
     public void addRating(double rating) {
         double totalRating = this.rating * this.reviews;
         this.reviews++;

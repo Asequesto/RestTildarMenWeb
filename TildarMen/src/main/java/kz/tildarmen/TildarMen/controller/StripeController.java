@@ -1,14 +1,27 @@
 package kz.tildarmen.TildarMen.controller;
 
+import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
+import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
+import kz.tildarmen.TildarMen.model.Job;
+import kz.tildarmen.TildarMen.model.Transaction;
+import kz.tildarmen.TildarMen.model.Translator;
+import kz.tildarmen.TildarMen.repository.TransactionRepository;
 import kz.tildarmen.TildarMen.requests.StripeAccCreateRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
+import kz.tildarmen.TildarMen.services.JobService;
 import kz.tildarmen.TildarMen.services.StripeService;
+import kz.tildarmen.TildarMen.services.TranslatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
@@ -16,6 +29,9 @@ import org.springframework.web.bind.annotation.*;
 public class StripeController {
 
     private final StripeService stripeService;
+    private final TranslatorService translatorService;
+    private final JobService jobService;
+    private final TransactionRepository transactionRepository;
 
 
     @PreAuthorize("hasAnyAuthority('TRANSLATOR')")
@@ -57,6 +73,45 @@ public class StripeController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/webhook")
+    public ResponseEntity<ApiResponse> handleStripeWebhook(@RequestBody String payload,
+                                                           @RequestHeader("Stripe-Signature") String sigHeader){
+        String endpointSecret = "whsec_zcoXe1XabirKDyFl24JVguJzOPfMnojD";
+        Event event;
+
+        try {
+            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+        } catch (SignatureVerificationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", e.getMessage()));
+        }
+
+        if("checkout.session.completed".equals(event.getType())){
+            EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+            if(deserializer.getObject().isPresent()){
+                Session session = (Session) deserializer.getObject().get();
+
+                String translatorId = session.getClientReferenceId();
+                Long jobId = Long.valueOf(session.getMetadata().get("jobId"));
+                Translator translator = translatorService.getTranslatorById(Long.parseLong(translatorId));
+                Job job = jobService.getJobById(jobId);
+
+                Transaction transaction = new Transaction();
+                transaction.setTranslator(translator);
+                transaction.setDate(LocalDateTime.now());
+                transaction.setDescription(job.getTitle());
+                transaction.setEmployer(job.getEmployer());
+                transaction.setPrice(job.getPrice());
+
+                transactionRepository.save(transaction);
+            } else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ApiResponse("Error", event.getType()));
+            }
+        }
+        return ResponseEntity.ok(new ApiResponse("Webhook success", null));
     }
 
 }
