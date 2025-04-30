@@ -59,7 +59,7 @@ services:
       - "8080:8080"
     volumes:
       - ./cloudAuth.json:/app/credentials/cloudAuth.json:ro
-      - "${PROJECT_PATH}:/app"
+      - .:/app
     environment:
       SPRING_DATASOURCE_URL:      jdbc:mysql://tildarmen_mysql:3306/${MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
