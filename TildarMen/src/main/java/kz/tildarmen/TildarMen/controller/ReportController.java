@@ -1,6 +1,7 @@
 package kz.tildarmen.TildarMen.controller;
 
 import kz.tildarmen.TildarMen.dto.ReportDto;
+import kz.tildarmen.TildarMen.enums.ReportReason;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.ReportService;
@@ -13,16 +14,26 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/report")
-@PreAuthorize("isAuthenticated()")
 public class ReportController {
 
 
     private final ReportService reportService;
 
+
+    @GetMapping("/report-reason")
+    public ResponseEntity<ApiResponse> reportReasonDropdown(){
+        return ResponseEntity.ok(new ApiResponse("Success", Arrays.stream(ReportReason.values())
+                .map(Enum::name)
+                .collect(Collectors.toList())));
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/translator/{id}")
     public ResponseEntity<ApiResponse> reportTranslator(@AuthenticationPrincipal User userDetails,
                                                         @PathVariable Long id,
@@ -43,6 +54,7 @@ public class ReportController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/job/{id}")
     public ResponseEntity<ApiResponse> reportJob(@AuthenticationPrincipal User userDetails,
                                                         @PathVariable Long id,
