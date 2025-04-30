@@ -27,35 +27,24 @@ public class ImageService {
     private final EmployerService employerService;
 
     public String uploadFile(Long id, MultipartFile file, String type) throws IOException {
-        String fileName = LocalDateTime.now() + file.getOriginalFilename();
-        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(fileName));
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
-        storage.create(blobInfo, file.getBytes());
-        String url = String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
+        String url = uploadFile(file);
         if(type != null) uploadUrl(id, url, type);
-
         return url;
-
     }
 
     public String uploadFileEmployer(Long id, MultipartFile file) throws IOException {
-        String fileName = LocalDateTime.now() + file.getOriginalFilename();
-        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(fileName));
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
-        storage.create(blobInfo, file.getBytes());
-        String url = String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
+        String url = uploadFile(file);
         Employer employer = employerService.getEmployerById(id);
         employer.setProfileImageUrl(url);
-
         return url;
     }
 
-    public String uploadReportFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) throws IOException {
         String fileName = LocalDateTime.now() + file.getOriginalFilename();
         BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(fileName));
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
         storage.create(blobInfo, file.getBytes());
-        return String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
+        return String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", fileName);
     }
 
     public void uploadUrl(Long id, String url, String type) {
