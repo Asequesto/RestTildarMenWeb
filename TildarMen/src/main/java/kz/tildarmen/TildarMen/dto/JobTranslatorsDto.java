@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class JobTranslatorsDto {
 
-    private Long id;
+    private Long jobId;
     private String firstName;
     private String lastName;
     private RequestStatus status;
