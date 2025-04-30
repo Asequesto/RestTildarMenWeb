@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/review")
-@PreAuthorize("isAuthenticated()")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -45,6 +44,7 @@ public class ReviewController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/{userId}/create/{translatorId}")
     public ResponseEntity<ApiResponse> createReview(@RequestBody CreateReviewRequest request,
                                                     @PathVariable Long translatorId,
@@ -62,6 +62,7 @@ public class ReviewController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("{id}/delete")
     public ResponseEntity<ApiResponse> deleteReview(@PathVariable Long id) {
         reviewService.deleteTranslatorReview(id);
