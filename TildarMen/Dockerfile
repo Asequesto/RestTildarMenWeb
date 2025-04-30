@@ -11,8 +11,6 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m"
 
 RUN chmod +x ./gradlew
 
-x
-
 RUN ./gradlew build -x test
 
 FROM openjdk:17-jdk-slim
