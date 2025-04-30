@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -26,7 +27,8 @@ public class ImageService {
     private final EmployerService employerService;
 
     public String uploadFile(Long id, MultipartFile file, String type) throws IOException {
-        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = LocalDateTime.now() + file.getOriginalFilename();
+        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(fileName));
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
         storage.create(blobInfo, file.getBytes());
         String url = String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
@@ -37,7 +39,8 @@ public class ImageService {
     }
 
     public String uploadFileEmployer(Long id, MultipartFile file) throws IOException {
-        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = LocalDateTime.now() + file.getOriginalFilename();
+        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(fileName));
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
         storage.create(blobInfo, file.getBytes());
         String url = String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
@@ -45,6 +48,14 @@ public class ImageService {
         employer.setProfileImageUrl(url);
 
         return url;
+    }
+
+    public String uploadReportFile(MultipartFile file) throws IOException {
+        String fileName = LocalDateTime.now() + file.getOriginalFilename();
+        BlobId blobId = BlobId.of("tildarmen_bucket", Objects.requireNonNull(fileName));
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
+        storage.create(blobInfo, file.getBytes());
+        return String.format("https://storage.googleapis.com/%s/%s", "tildarmen_bucket", file.getOriginalFilename());
     }
 
     public void uploadUrl(Long id, String url, String type) {
