@@ -12,5 +12,6 @@ public class TransactionDto {
     private String description;
     private String translatorFirstName;
     private String translatorLastName;
+    private String profileImageUrl;
 
 }

@@ -12,6 +12,7 @@ public interface TransactionMapper {
 
     @Mapping(source = "translator.firstName", target = "translatorFirstName")
     @Mapping(source = "translator.lastName", target = "translatorLastName")
+    @Mapping(source = "translator.profileImageUrl", target = "profileImageUrl")
     TransactionDto toDto(Transaction transaction);
 
     List<TransactionDto> toDtoList(List<Transaction> transactions);
