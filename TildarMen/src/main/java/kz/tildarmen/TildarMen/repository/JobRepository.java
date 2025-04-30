@@ -25,7 +25,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             "AND (:specializations IS NULL OR sp.id IN :specializations) " +
             "AND (:location IS NULL OR loc.id IN :location) " +
             "AND (:startDate IS NULL OR j.startDate >= :startDate) " +
-            "AND (:endDate IS NULL OR j.endDate <= :endDate)")
+            "AND (:endDate IS NULL OR j.endDate <= :endDate)" +
+            "ORDER BY j.publicationDate DESC")
     List<Job> filterJobs(
             @Param("languages") List<Long> languages,
             @Param("serviceTypes") List<Long> serviceTypes,
