@@ -6,6 +6,7 @@ import lombok.Data;
 public class GetEmployerProfile {
     String firstName;
     String lastName;
+    String profileImageUrl;
     String location;
     String introduction;
 }

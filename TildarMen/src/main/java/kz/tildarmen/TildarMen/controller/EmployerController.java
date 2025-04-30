@@ -4,6 +4,7 @@ import kz.tildarmen.TildarMen.dto.JobApplicationDto;
 import kz.tildarmen.TildarMen.dto.JobDto;
 import kz.tildarmen.TildarMen.dto.JobRequestDto;
 import kz.tildarmen.TildarMen.dto.JobTranslatorsDto;
+import kz.tildarmen.TildarMen.mapper.GetEmployerProfileMapper;
 import kz.tildarmen.TildarMen.model.Employer;
 import kz.tildarmen.TildarMen.requests.GetEmployerProfile;
 import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
@@ -31,17 +32,13 @@ public class EmployerController {
     private final JobRequestService jobRequestService;
     private final ImageService imageService;
     private final TransactionService transactionService;
+    private final GetEmployerProfileMapper getEmployerProfileMapper;
 
     @GetMapping("/{id}/profile")
     public ResponseEntity<ApiResponse> getEmployerProfile(@PathVariable Long id) {
         try {
             Employer employer = employerService.getEmployerById(id);
-            GetEmployerProfile profile = new GetEmployerProfile();
-            profile.setIntroduction(employer.getIntroduction());
-            profile.setFirstName(employer.getFirstName());
-            profile.setLastName(employer.getLastName());
-            if(employer.getLocation() != null) profile.setLocation(employer.getLocation().getCity());
-            return ResponseEntity.ok(new ApiResponse("Success", profile));
+            return ResponseEntity.ok(new ApiResponse("Success", getEmployerProfileMapper.toDto(employer)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }

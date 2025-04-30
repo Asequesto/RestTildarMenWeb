@@ -1,4 +1,3 @@
-# Use a Debian-based JDK image for the builder stage
 FROM openjdk:17-slim AS builder
 
 WORKDIR /app
@@ -12,12 +11,10 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m"
 
 RUN chmod +x ./gradlew
 
+x
 
-
-# Build the application
 RUN ./gradlew build -x test
 
-# Create final image
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
