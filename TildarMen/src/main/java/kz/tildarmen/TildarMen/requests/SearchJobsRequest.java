@@ -10,7 +10,7 @@ public class SearchJobsRequest {
     List<String> languages;
     List<String> serviceTypes;
     List<String> specializations;
-    List<String> locations;
+    String location;
     LocalDateTime startDate;
     LocalDateTime endDate;
 }

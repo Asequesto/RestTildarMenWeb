@@ -26,17 +26,12 @@ public class JobController {
         return ResponseEntity.ok(new ApiResponse("Success", jobs));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse> getJobsByTitle(@RequestParam String title) {
-        List<JobDto> jobs = jobService.searchJobsByTitle(title);
-        return ResponseEntity.ok(new ApiResponse("Success", jobs));
-    }
-
     @PostMapping("/filter")
-    public ResponseEntity<ApiResponse> getFilteredJobs(@RequestBody(required = false) SearchJobsRequest request) {
+    public ResponseEntity<ApiResponse> getFilteredJobs(@RequestBody(required = false) SearchJobsRequest request,
+                                                       @RequestParam(required = false) String title) {
 
         List<JobDto> jobs = jobService
-                .filterJobs(request);
+                .filterJobs(request, title);
         return ResponseEntity.ok(new ApiResponse("Success", jobs));
     }
 

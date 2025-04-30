@@ -16,7 +16,7 @@ public class JobDto {
     private LocalDateTime publicationDate;
     private Long price;
     private int applicantsCount;
-    Set<LocationDto> locations;
+    String location;
     Set<LanguageDto> languages;
     Set<ServiceTypesDto> serviceTypes;
     Set<SpecializationDto> specializations;

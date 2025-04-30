@@ -44,12 +44,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/translators/search")
-    public ResponseEntity<ApiResponse> searchTranslators(@RequestParam String username) {
-        List<SearchTranslatorDto> translators = translatorService.searchTranslatorsByName(username);
-        return ResponseEntity.ok(new ApiResponse("Success", translators));
-    }
-
     @GetMapping("/translator/{id}/profile")
     public ResponseEntity<ApiResponse> getTranslatorProfile(@PathVariable Long id) {
         try {
@@ -105,10 +99,11 @@ public class UserController {
     }
 
     @PostMapping("/translators/filter")
-    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestBody(required = false) SearchTranslatorsRequest request) {
+    public ResponseEntity<ApiResponse> getFilteredTranslators(@RequestParam(required = false) String username,
+                                                              @RequestBody(required = false) SearchTranslatorsRequest request) {
 
         List<SearchTranslatorDto> translators = translatorService
-                .filterTranslators(request);
+                .filterTranslators(username, request);
         return ResponseEntity.ok(new ApiResponse("Success", translators));
     }
 

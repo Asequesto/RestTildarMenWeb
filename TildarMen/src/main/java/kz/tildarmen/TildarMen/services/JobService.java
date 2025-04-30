@@ -27,7 +27,6 @@ public class JobService {
     private final ServiceTypesService serviceTypesService;
     private final SpecializationService specializationService;
     private final LanguageMapper languageMapper;
-    private final LocationMapper locationMapper;
     private final ServiceTypesMapper serviceTypesMapper;
     private final SpecializationMapper specializationMapper;
     private final JobTranslatorsMapper jobTranslatorsMapper;
@@ -55,27 +54,22 @@ public class JobService {
         return applications;
     }
 
-    public List<JobDto> searchJobsByTitle(String jobTitle) {
-        List<Job> jobs = jobRepository.findAllByTitle(jobTitle);
-        return jobMapper.toDtoList(jobs);
-    }
-
-    public List<JobDto> filterJobs(SearchJobsRequest request) {
-        List<Long> locations = locationService.getAllByName(request.getLocations())
-                .stream().map(Location::getId).toList();
+    public List<JobDto> filterJobs(SearchJobsRequest request, String title) {
+        Long location;
+        if(request.getLocation() == null || request.getLocation().isEmpty()) location = null;
+        else location = locationService.getLocationByName(request.getLocation()).getId();
         List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
                 .stream().map(ServiceTypes::getId).toList();
         List<Long> languages = languageService.getAllByName(request.getLanguages())
                 .stream().map(Language::getId).toList();
         List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
                 .stream().map(Specialization::getId).toList();
-        if(request.getLocations() == null || request.getLocations().isEmpty()) locations = null;
         if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()) services = null;
         if(request.getSpecializations() == null || request.getSpecializations().isEmpty()) specializations = null;
         if(request.getLanguages() == null || request.getLanguages().isEmpty()) languages = null;
         return jobMapper.toDtoList(jobRepository
-                .filterJobs(languages, services, specializations, locations,
-                        request.getStartDate(), request.getEndDate()));
+                .filterJobs(languages, services, specializations, location,
+                        request.getStartDate(), request.getEndDate(), title));
     }
 
     public JobDto addJob(Long employerId, JobDto jobDto) {
@@ -90,7 +84,7 @@ public class JobService {
         job.setPrice(jobDto.getPrice());
 
         job.setLanguages(addLanguages(languageMapper.toEntitySet(jobDto.getLanguages())));
-        job.setLocations(addLocations(locationMapper.toEntitySet(jobDto.getLocations())));
+        job.setLocation(locationService.getLocationByName(jobDto.getLocation()));
         job.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(jobDto.getServiceTypes())));
         job.setSpecializations(addSpecializations(specializationMapper.toEntitySet(jobDto.getSpecializations())));
         job.setEmployer(employer);
@@ -104,15 +98,6 @@ public class JobService {
             newLanguages.add(language);
         }
         return newLanguages;
-    }
-
-    public Set<Location> addLocations(Set<Location> locations) {
-        Set<Location> newLocations = new HashSet<>();
-        for (Location location : locations) {
-            location = locationService.getLocationByName(location.getCity());
-            newLocations.add(location);
-        }
-        return newLocations;
     }
 
     public Set<ServiceTypes> addServiceTypes(Set<ServiceTypes> services) {
@@ -142,7 +127,7 @@ public class JobService {
         newJob.setEndDate(job.getEndDate());
         newJob.setPrice(job.getPrice());
         newJob.setLanguages(addLanguages(languageMapper.toEntitySet(job.getLanguages())));
-        newJob.setLocations(addLocations(locationMapper.toEntitySet(job.getLocations())));
+        newJob.setLocation(locationService.getLocationByName(job.getLocation()));
         newJob.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(job.getServiceTypes())));
         newJob.setSpecializations(addSpecializations(specializationMapper.toEntitySet(job.getSpecializations())));
         newJob.setEmployer(employer);

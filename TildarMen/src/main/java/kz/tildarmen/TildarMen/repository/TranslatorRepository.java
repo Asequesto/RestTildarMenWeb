@@ -19,22 +19,21 @@ public interface TranslatorRepository extends JpaRepository<Translator, Long> {
             "LEFT JOIN t.serviceTypes st " +
             "LEFT JOIN t.specializations sp " +
             "LEFT JOIN t.location loc " +
-            "WHERE (:availability IS NULL OR t.availability = :availability) " +
+            "WHERE (LOWER(t.firstName) " +
+            "LIKE LOWER(CONCAT('%', :username, '%')) " +
+            "OR LOWER(t.lastName) LIKE LOWER(CONCAT('%', :username, '%')))" +
+            "AND (:availability IS NULL OR t.availability = :availability) " +
             "AND (:languages IS NULL OR l.id IN :languages) " +
             "AND (:serviceTypes IS NULL OR st.id IN :serviceTypes) " +
             "AND (:specializations IS NULL OR sp.id IN :specializations) " +
             "AND (:location IS NULL OR loc.id IN :location)")
-    List<Translator> filterTranslators(
+    List<Translator>
+    filterTranslators(
+            String username,
             @Param("availability") AvailabilityStatus availability,
             @Param("languages") List<Long> languages,
             @Param("serviceTypes") List<Long> serviceTypes,
             @Param("specializations") List<Long> specializations,
             @Param("location") List<Long> location
     );
-
-    @Query("SELECT t FROM Translator t " +
-            "WHERE LOWER(t.firstName) " +
-            "LIKE LOWER(CONCAT('%', :username, '%')) " +
-            "OR LOWER(t.lastName) LIKE LOWER(CONCAT('%', :username, '%'))")
-    List<Translator> searchTranslatorsByUsername(String username);
 }

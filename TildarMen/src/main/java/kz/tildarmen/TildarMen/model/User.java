@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -31,7 +32,9 @@ public class User implements UserDetails {
     @NotBlank(message = "Last name must not be blank")
     private String lastName;
     private String email;
+    @JsonIgnore
     private String phoneNumber;
+    @JsonIgnore
     private String password;
     private String profileImageUrl;
 

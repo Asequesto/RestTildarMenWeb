@@ -37,19 +37,15 @@ public class Job {
         if (this.applicantsCount > 0) this.applicantsCount--;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobRequest> jobRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobApplication> applications = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "job_locations",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "location_id")
-    )
-    private Set<Location> locations;
 
     @ManyToMany
     @JoinTable(

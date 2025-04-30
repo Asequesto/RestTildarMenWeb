@@ -56,7 +56,7 @@ public class TranslatorService {
 
     }
 
-    public List<SearchTranslatorDto> filterTranslators(SearchTranslatorsRequest request) {
+    public List<SearchTranslatorDto> filterTranslators(String username, SearchTranslatorsRequest request) {
         List<Long> locations = locationService.getAllByName(request.getLocations())
                 .stream().map(Location::getId).toList();
         List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
@@ -72,13 +72,8 @@ public class TranslatorService {
         if(request.getLanguages() == null || request.getLanguages().isEmpty()) languages = null;
         if(request.getAvailability() != null) status = AvailabilityStatus.valueOf(request.getAvailability().toUpperCase());
         return searchTranslatorMapper.toDtoList(
-                translatorRepository.filterTranslators(status,
+                translatorRepository.filterTranslators(username, status,
                         languages, services, specializations, locations));
-    }
-
-    public List<SearchTranslatorDto> searchTranslatorsByName(String username) {
-        List<Translator> translators = translatorRepository.searchTranslatorsByUsername(username.toLowerCase());
-        return searchTranslatorMapper.toDtoList(translators);
     }
 
     public UserDto updateTranslatorAccountSettings(UpdateUserRequest request, Long id) {

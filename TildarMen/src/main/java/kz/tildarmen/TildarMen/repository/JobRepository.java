@@ -19,8 +19,10 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             "LEFT JOIN j.languages l " +
             "LEFT JOIN j.serviceTypes st " +
             "LEFT JOIN j.specializations sp " +
-            "LEFT JOIN j.locations loc " +
-            "WHERE (:languages IS NULL OR l.id IN :languages) " +
+            "LEFT JOIN j.location loc " +
+            "WHERE LOWER(j.title)" +
+            "LIKE LOWER(CONCAT('%', :jobTitle, '%'))" +
+            "AND (:languages IS NULL OR l.id IN :languages) " +
             "AND (:serviceTypes IS NULL OR st.id IN :serviceTypes) " +
             "AND (:specializations IS NULL OR sp.id IN :specializations) " +
             "AND (:location IS NULL OR loc.id IN :location) " +
@@ -31,13 +33,9 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             @Param("languages") List<Long> languages,
             @Param("serviceTypes") List<Long> serviceTypes,
             @Param("specializations") List<Long> specializations,
-            @Param("location") List<Long> location,
+            @Param("location") Long location,
             @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate
+            @Param("endDate") LocalDateTime endDate,
+            String jobTitle
     );
-
-    @Query("SELECT j FROM Job j " +
-            "WHERE LOWER(j.title) " +
-            "LIKE LOWER(CONCAT('%', :jobTitle, '%'))")
-    List<Job> findAllByTitle(String jobTitle);
 }
