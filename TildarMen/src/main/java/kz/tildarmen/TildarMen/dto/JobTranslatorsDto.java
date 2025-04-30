@@ -11,6 +11,7 @@ public class JobTranslatorsDto {
     private Long jobId;
     private String firstName;
     private String lastName;
+    private String profileImageUrl;
     private RequestStatus status;
     private LocalDateTime sendAt;
     private Long price;

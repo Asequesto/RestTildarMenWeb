@@ -15,6 +15,7 @@ public interface JobTranslatorsMapper {
     @Mapping(source = "translator.firstName", target = "firstName")
     @Mapping(source = "translator.lastName", target = "lastName")
     @Mapping(source = "translator.rating", target = "rating")
+    @Mapping(source = "translator.profileImageUrl", target = "profileImageUrl")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "appliedAt", target = "sendAt")
     @Mapping(source = "job.price", target = "price")
