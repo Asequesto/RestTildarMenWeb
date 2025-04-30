@@ -11,7 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface JobTranslatorsMapper {
 
-    @Mapping(source = "id", target = "jobId")
     @Mapping(source = "translator.firstName", target = "firstName")
     @Mapping(source = "translator.lastName", target = "lastName")
     @Mapping(source = "translator.rating", target = "rating")
@@ -21,7 +20,6 @@ public interface JobTranslatorsMapper {
     @Mapping(source = "job.price", target = "price")
     JobTranslatorsDto fromApplication(JobApplication jobApplication);
 
-    @Mapping(source = "id", target = "jobId")
     @Mapping(source = "translator.firstName", target = "firstName")
     @Mapping(source = "translator.lastName", target = "lastName")
     @Mapping(source = "translator.rating", target = "rating")
