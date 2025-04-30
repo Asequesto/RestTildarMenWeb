@@ -63,6 +63,10 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addUser(@RequestBody CreateUserRequest request) {
         UserDto user;
+        if(userService.findUserByEmail(request.getEmail()) != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ApiResponse("Error", "User already exists"));
+        }
         EmailVerifyToken token = emailVerifyTokenRepository.findByEmail(request.getEmail());
         if(token == null || token.getToken() == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
