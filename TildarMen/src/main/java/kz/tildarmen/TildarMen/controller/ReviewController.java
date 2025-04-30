@@ -3,6 +3,7 @@ package kz.tildarmen.TildarMen.controller;
 import kz.tildarmen.TildarMen.dto.ReviewDto;
 import kz.tildarmen.TildarMen.mapper.ReviewMapper;
 import kz.tildarmen.TildarMen.model.Review;
+import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.CreateReviewRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
 import kz.tildarmen.TildarMen.services.ReviewService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,8 +48,13 @@ public class ReviewController {
     @PostMapping("/{userId}/create/{translatorId}")
     public ResponseEntity<ApiResponse> createReview(@RequestBody CreateReviewRequest request,
                                                     @PathVariable Long translatorId,
-                                                    @PathVariable Long userId) {
+                                                    @PathVariable Long userId,
+                                                    @AuthenticationPrincipal User userDetails) {
         try {
+            if (translatorId.equals(userDetails.getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse("Forbidden", "You do not have permission"));
+            }
             ReviewDto review = reviewService.createTranslatorReview(translatorId, userId, request);
             return ResponseEntity.ok(new ApiResponse("Success", review));
         } catch (Exception e) {
