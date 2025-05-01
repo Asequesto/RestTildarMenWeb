@@ -17,6 +17,5 @@ public interface EducationMapper {
     Education toEntity(EducationDto educationDto);
 
     List<EducationDto> toDtoList(List<Education> educations);
-    List<Education> toEntityList(List<EducationDto> educationDtoList);
 
 }

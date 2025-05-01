@@ -67,12 +67,7 @@ public class EmployerService {
 
     public void updatePassword(Long id, UpdatePasswordRequest request) {
         Employer employer = getEmployerById(id);
-        if (!passwordEncoder.matches(request.getOldPassword(), employer.getPassword())) {
-            throw new IllegalArgumentException("Old password is incorrect");
-        }
-        if(!request.getPassword().equals(request.getRepeatPassword())) {
-            throw new IllegalArgumentException("Passwords does not match");
-        }
+        userService.checkPassword(request, employer);
         employer.setPassword(passwordEncoder.encode(request.getPassword()));
         employerRepository.save(employer);
     }

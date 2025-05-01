@@ -10,8 +10,6 @@ import kz.tildarmen.TildarMen.repository.WorkExperienceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -20,10 +18,6 @@ public class WorkExperienceService {
     private final WorkExperienceRepository workExperienceRepository;
     private final WorkExperienceMapper workExperienceMapper;
     private final TranslatorService translatorService;
-
-    public List<WorkExperienceDto> findAllByTranslatorId(Long translatorId) {
-        return workExperienceMapper.toDtoList(workExperienceRepository.findAllByTranslatorId(translatorId));
-    }
 
     public WorkExperienceDto addWorkExperience(WorkExperienceDto workExperienceDto, Long translatorId) {
         WorkExperience workExperience = workExperienceMapper.toEntity(workExperienceDto);

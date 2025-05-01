@@ -16,6 +16,5 @@ public interface WorkExperienceMapper {
     WorkExperience toEntity(WorkExperienceDto workExperienceDto);
 
     List<WorkExperienceDto> toDtoList(List<WorkExperience> workExperiences);
-    List<WorkExperience> toEntityList(List<WorkExperienceDto> workExperienceDtoList);
 
 }

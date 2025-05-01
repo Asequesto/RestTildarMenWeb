@@ -6,7 +6,6 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 
 import java.util.List;
-import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
@@ -15,8 +14,6 @@ public interface LocationMapper {
 
     @InheritInverseConfiguration
     Location toEntity(LocationDto locationDto);
-
-    Set<Location> toEntitySet(Set<LocationDto> locationDtoSet);
 
     List<LocationDto> toDtoList(List<Location> cities);
 }

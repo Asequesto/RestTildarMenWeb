@@ -14,6 +14,7 @@ import kz.tildarmen.TildarMen.repository.ResetPasswordTokenRepository;
 import kz.tildarmen.TildarMen.repository.UserRepository;
 import kz.tildarmen.TildarMen.requests.CreateUserRequest;
 import kz.tildarmen.TildarMen.requests.ResetPasswordRequest;
+import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,6 +74,15 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.findByEmail(email);
+    }
+
+    public void checkPassword(UpdatePasswordRequest request, User user) {
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+        if(!request.getPassword().equals(request.getRepeatPassword())) {
+            throw new IllegalArgumentException("Passwords does not match");
+        }
     }
 
     public void sendVerificationEmail(String email) throws MessagingException {

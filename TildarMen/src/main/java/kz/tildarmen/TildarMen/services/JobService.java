@@ -58,10 +58,10 @@ public class JobService {
         Long location;
         if(request.getLocation() == null || request.getLocation().isEmpty()) location = null;
         else location = locationService.getLocationByName(request.getLocation()).getId();
-        List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
-                .stream().map(ServiceTypes::getId).toList();
         List<Long> languages = languageService.getAllByName(request.getLanguages())
                 .stream().map(Language::getId).toList();
+        List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
+                .stream().map(ServiceTypes::getId).toList();
         List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
                 .stream().map(Specialization::getId).toList();
         if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()) services = null;
@@ -74,9 +74,11 @@ public class JobService {
 
     public JobDto addJob(Long employerId, JobDto jobDto) {
         Employer employer = employerService.getEmployerById(employerId);
-
-
         Job job = new Job();
+        return setJob(jobDto, employer, job);
+    }
+
+    public JobDto setJob(JobDto jobDto, Employer employer, Job job) {
         job.setTitle(jobDto.getTitle());
         job.setDescription(jobDto.getDescription());
         job.setStartDate(jobDto.getStartDate());
@@ -121,17 +123,7 @@ public class JobService {
     public JobDto updateJobById(Long employerId, Long jobId, JobDto job) {
         Employer employer = employerService.getEmployerById(employerId);
         Job newJob = getJobById(jobId);
-        newJob.setTitle(job.getTitle());
-        newJob.setDescription(job.getDescription());
-        newJob.setStartDate(job.getStartDate());
-        newJob.setEndDate(job.getEndDate());
-        newJob.setPrice(job.getPrice());
-        newJob.setLanguages(addLanguages(languageMapper.toEntitySet(job.getLanguages())));
-        newJob.setLocation(locationService.getLocationByName(job.getLocation()));
-        newJob.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(job.getServiceTypes())));
-        newJob.setSpecializations(addSpecializations(specializationMapper.toEntitySet(job.getSpecializations())));
-        newJob.setEmployer(employer);
-        return jobMapper.toDto(jobRepository.save(newJob));
+        return setJob(job, employer, newJob);
     }
 
     public void deleteJobByEmployerId(Long employerId, Long jobId) {

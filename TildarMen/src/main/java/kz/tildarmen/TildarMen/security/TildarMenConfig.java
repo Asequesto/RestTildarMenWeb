@@ -29,7 +29,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class TildarMenConfig {
 
     private final TildarMenUserDetailsService userDetailsService;

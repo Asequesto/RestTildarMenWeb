@@ -15,6 +15,5 @@ public interface CertificateMapper {
     Certificate toEntity(CertificateDto certificateDto);
 
     List<CertificateDto> toDtoList(List<Certificate> certificateList);
-    List<Certificate> toEntityList(List<CertificateDto> certificateDtoList);
 
 }

@@ -44,12 +44,12 @@ public class TranslatorService {
         User checkUser =  userService.findUserByUserName(request.getEmail(), request.getPhoneNumber());
         if(checkUser == null) {
             Translator translator = new Translator();
+            translator.setRole(Role.valueOf(request.getRole().toUpperCase()));
             translator.setEmail(request.getEmail());
             translator.setPhoneNumber(request.getPhoneNumber());
             translator.setFirstName(request.getFirstName());
             translator.setLastName(request.getLastName());
             translator.setPassword(passwordEncoder.encode(request.getPassword()));
-            translator.setRole(Role.valueOf(request.getRole().toUpperCase()));
             return userMapper.toUserDto(translatorRepository.save(translator));
         }
         return null;
@@ -106,12 +106,7 @@ public class TranslatorService {
 
     public void updatePassword(Long id, UpdatePasswordRequest request) {
         Translator translator = getTranslatorById(id);
-        if (!passwordEncoder.matches(request.getOldPassword(), translator.getPassword())) {
-            throw new IllegalArgumentException("Old password is incorrect");
-        }
-        if(!request.getPassword().equals(request.getRepeatPassword())) {
-            throw new IllegalArgumentException("Passwords does not match");
-        }
+        userService.checkPassword(request, translator);
         translator.setPassword(passwordEncoder.encode(request.getPassword()));
         translatorRepository.save(translator);
     }

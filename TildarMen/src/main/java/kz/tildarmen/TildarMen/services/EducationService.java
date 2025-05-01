@@ -27,6 +27,11 @@ public class EducationService {
         Translator translator = translatorService.getTranslatorById(translatorId);
         Education education = new Education();
         education.setTranslator(translator);
+        return getEducationDto(translatorId, file, request, education);
+    }
+
+    public EducationDto getEducationDto(Long translatorId, MultipartFile file,
+                                        UploadEducationRequest request, Education education) throws IOException {
         education.setDegree(request.getDegree());
         education.setUniversity(request.getUniversity());
         education.setGraduationYear(request.getGraduationYear());
@@ -44,12 +49,7 @@ public class EducationService {
             throw new IllegalArgumentException("Education does not belong to translator");
         }
         imageService.deleteImage(education.getDegreeUrl());
-        education.setDegree(request.getDegree());
-        education.setUniversity(request.getUniversity());
-        education.setGraduationYear(request.getGraduationYear());
-        String url = imageService.uploadFile(translatorId, file, null);
-        education.setDegreeUrl(url);
-        return educationMapper.toDto(educationRepository.save(education));
+        return getEducationDto(translatorId, file, request, education);
     }
 
     public void deleteEducation(Long translatorId, Long educationId) {
