@@ -56,13 +56,18 @@ public class EmployerService {
 
     public void updateProfile(GetEmployerProfile profile, Long id) {
         Employer employer = getEmployerById(id);
-        if(profile.getIntroduction() != null) employer.setIntroduction(profile.getIntroduction());
-        if(profile.getLocation() != null) {
+        User checkUser = userService.findUserByPhoneNumber(profile.getPhoneNumber());
+        if (checkUser != null && !checkUser.getId().equals(id)) {
+            throw new RuntimeException("Phone number is already in use!");
+        }
+        employer.setIntroduction(profile.getIntroduction());
+        if(profile.getLocation() != null && !profile.getLocation().isEmpty()) {
             Location location = locationService.getLocationByName(profile.getLocation());
             employer.setLocation(location);
         }
-        if(profile.getFirstName() != null) employer.setFirstName(profile.getFirstName());
-        if(profile.getLastName() != null) employer.setLastName(profile.getLastName());
+        employer.setFirstName(profile.getFirstName());
+        employer.setLastName(profile.getLastName());
+        employer.setPhoneNumber(profile.getPhoneNumber());
     }
 
     public void updatePassword(Long id, UpdatePasswordRequest request) {

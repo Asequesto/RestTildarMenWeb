@@ -32,7 +32,9 @@ public class User implements UserDetails {
     @NotBlank(message = "Last name must not be blank")
     private String lastName;
     private String email;
+
     @JsonIgnore
+    @NotBlank(message = "Last name must not be blank")
     private String phoneNumber;
     @JsonIgnore
     private String password;
