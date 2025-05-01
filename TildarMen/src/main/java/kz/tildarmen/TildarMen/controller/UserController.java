@@ -77,7 +77,6 @@ public class UserController {
                     .body(new ApiResponse("Email verify code is incorrect!", request.getEmail()));
         }
         Date now = new Date();
-        System.out.println(now.before(token.getExpiratyDate()));
         if(!(now.before(token.getExpiratyDate()))){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse("Email verify expired!", request.getEmail()));
@@ -85,6 +84,12 @@ public class UserController {
         if(request.getPhoneNumber() == null || request.getPhoneNumber().isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse("Phone number is empty or null!", "phone: " + request.getPhoneNumber()));
+        }
+
+        if(request.getPassword() == null || request.getPassword().isEmpty() ||
+                (!request.getPassword().equals(request.getConfirmPassword()))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                    body(new ApiResponse("Passwords do not match!", "Enter a valid password!"));
         }
 
         if (request.getRole().equalsIgnoreCase("translator")) {
@@ -142,7 +147,7 @@ public class UserController {
             if(res.equals("Success")) {
                 return ResponseEntity.ok(new ApiResponse(res, null));
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", "res"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", res));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
