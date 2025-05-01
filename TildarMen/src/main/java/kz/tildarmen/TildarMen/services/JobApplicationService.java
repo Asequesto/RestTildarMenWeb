@@ -27,6 +27,7 @@ public class JobApplicationService {
     private final JobApplicationMapper jobApplicationMapper;
     private final EmailSenderService emailSenderService;
     private final UserService userService;
+    private final AuthService authService;
 
     public JobApplication findById(Long id) {
         return jobApplicationRepository.findById(id)
@@ -83,11 +84,11 @@ public class JobApplicationService {
         return jobApplicationMapper.toDto(jobApplicationRepository.save(application));
     }
 
-    public void updateApplicationStatus(Long jobApplicationId, String status) throws MessagingException {
+    public void updateApplicationStatus(Long jobApplicationId, String status, User userDetails) throws MessagingException {
         JobApplication application = findById(jobApplicationId);
         User user = userService.getAuthenticatedUser();
         Job job = application.getJob();
-
+        authService.checkPermission(userDetails, job.getEmployer().getId());
         String email = application.getTranslator().getEmail();
         String subject = "Job Application " + jobApplicationId + " got responded";
         String message = """

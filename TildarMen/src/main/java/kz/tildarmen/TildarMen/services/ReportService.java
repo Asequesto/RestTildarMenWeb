@@ -44,6 +44,9 @@ public class ReportService {
     public ReportDto reportJob(Long jobId, Long userId, ReportDto reportDto,
                                MultipartFile file) throws IOException{
         Job job = jobService.getJobById(jobId);
+        if(userId.equals(job.getEmployer().getId())){
+            throw new SecurityException("You are not allowed to report your job");
+        }
         createReport(userId, reportDto, file);
         Report report = createReport(userId, reportDto, file);
         report.setReportedJob(job);

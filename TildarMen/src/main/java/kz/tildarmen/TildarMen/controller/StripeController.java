@@ -9,9 +9,11 @@ import com.stripe.net.Webhook;
 import kz.tildarmen.TildarMen.model.Job;
 import kz.tildarmen.TildarMen.model.Transaction;
 import kz.tildarmen.TildarMen.model.Translator;
+import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.TransactionRepository;
 import kz.tildarmen.TildarMen.requests.StripeAccCreateRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
+import kz.tildarmen.TildarMen.services.AuthService;
 import kz.tildarmen.TildarMen.services.JobService;
 import kz.tildarmen.TildarMen.services.StripeService;
 import kz.tildarmen.TildarMen.services.TranslatorService;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -32,17 +35,23 @@ public class StripeController {
     private final TranslatorService translatorService;
     private final JobService jobService;
     private final TransactionRepository transactionRepository;
+    private final AuthService authService;
 
 
     @PreAuthorize("hasAnyAuthority('TRANSLATOR')")
     @GetMapping("/account/{id}")
-    public ResponseEntity<ApiResponse> getAccount(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> getAccount(@PathVariable Long id, @AuthenticationPrincipal User userDetails) {
         try {
+            authService.checkPermission(userDetails, id);
             return ResponseEntity.ok(new ApiResponse("Success", stripeService.getAccount(id)));
         } catch (StripeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
-        } catch (Exception e){
+        } catch (SecurityException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse("Forbidden", e.getMessage()));
+        }
+        catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
         }
 
@@ -50,11 +59,17 @@ public class StripeController {
 
     @PreAuthorize("hasAnyAuthority('TRANSLATOR')")
     @PostMapping("/account/{id}")
-    public ResponseEntity<ApiResponse> createStripeAccount(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> createStripeAccount(@PathVariable Long id,
+                                                           @AuthenticationPrincipal User userDetails) {
         try {
+            authService.checkPermission(userDetails, id);
             StripeAccCreateRequest request = stripeService.createAccount(id);
             return ResponseEntity.ok(new ApiResponse("Success", request));
-        } catch (StripeException e) {
+        } catch (SecurityException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse("Forbidden", e.getMessage()));
+        }
+        catch (StripeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
         } catch (Exception e){
@@ -64,10 +79,16 @@ public class StripeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/payment/{id}/job/{jobId}")
-    public ResponseEntity<ApiResponse> payment(@PathVariable Long id, @PathVariable Long jobId) {
+    public ResponseEntity<ApiResponse> payment(@PathVariable Long id, @PathVariable Long jobId,
+                                               @AuthenticationPrincipal User userDetails) {
         try {
+            authService.checkPermission(userDetails, id);
             return ResponseEntity.ok(new ApiResponse("Success", stripeService.payment(id, jobId)));
-        } catch (StripeException e) {
+        } catch (SecurityException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse("Forbidden", e.getMessage()));
+        }
+        catch (StripeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Error", e.getMessage()));
         } catch (Exception e){

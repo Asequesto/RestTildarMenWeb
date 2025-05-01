@@ -25,6 +25,7 @@ public class JobRequestService {
     private final JobRequestMapper jobRequestMapper;
     private final EmailSenderService emailSenderService;
     private final UserService userService;
+    private final AuthService authService;
 
     public JobRequest findById(Long id) {
         return jobRequestRepository.findById(id)
@@ -88,11 +89,12 @@ public class JobRequestService {
     }
 
 
-    public void updateRequestStatus(Long jobRequestId, String status) throws MessagingException {
+    public void updateRequestStatus(Long jobRequestId, String status, User userDetails) throws MessagingException {
         JobRequest jobRequest = findById(jobRequestId);
         jobRequest.setStatus(RequestStatus.valueOf(status.toUpperCase()));
         User user = userService.getAuthenticatedUser();
         Job job = jobRequest.getJob();
+        authService.checkPermission(userDetails, job.getEmployer().getId());
 
         String email = jobRequest.getEmployer().getEmail();
         String subject = "Job Request " + jobRequestId +  " Responded";

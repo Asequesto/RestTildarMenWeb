@@ -6,6 +6,7 @@ import kz.tildarmen.TildarMen.model.Review;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.CreateReviewRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
+import kz.tildarmen.TildarMen.services.AuthService;
 import kz.tildarmen.TildarMen.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
+    private final AuthService authService;
 
     @GetMapping("/{id}/get")
     public ResponseEntity<ApiResponse> getReview(@PathVariable Long id) {
@@ -64,8 +66,18 @@ public class ReviewController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("{id}/delete")
-    public ResponseEntity<ApiResponse> deleteReview(@PathVariable Long id) {
-        reviewService.deleteTranslatorReview(id);
-        return ResponseEntity.ok(new ApiResponse("Success", null));
+    public ResponseEntity<ApiResponse> deleteReview(@PathVariable Long id,
+                                                    @AuthenticationPrincipal User userDetails) {
+        try {
+            authService.checkPermission(userDetails, id);
+            reviewService.deleteTranslatorReview(id);
+            return ResponseEntity.ok(new ApiResponse("Success", null));
+        } catch (SecurityException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse("Forbidden", e.getMessage()));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse("Error", e.getMessage()));
+        }
     }
 }
