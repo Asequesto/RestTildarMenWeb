@@ -86,6 +86,10 @@ public class UserService {
     }
 
     public void sendVerificationEmail(String email) throws MessagingException {
+        User user = findUserByEmail(email);
+        if(user != null){
+            throw new RuntimeException("User already exists");
+        }
         Integer verificationCode = (int) (Math.random() * 900_000) + 100_000;
         EmailVerifyToken emailVerifyToken = emailVerifyTokenRepository.findByEmail(email);
         if(emailVerifyToken != null){
