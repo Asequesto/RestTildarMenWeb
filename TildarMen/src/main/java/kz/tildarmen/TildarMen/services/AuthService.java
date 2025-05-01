@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     public void checkPermission(User user, Long userId) {
-        if(user.getId().equals(userId)) {
+        if(!(user.getId().equals(userId))) {
             throw new SecurityException("Permission denied, you can't use this service");
         }
     }
