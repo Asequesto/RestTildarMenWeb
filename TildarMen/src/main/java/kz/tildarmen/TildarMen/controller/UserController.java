@@ -138,26 +138,13 @@ public class UserController {
         }
     }
 
-    @PostMapping("/verify-code")
-    public ResponseEntity<ApiResponse> verifyCode(@RequestBody VerifyCodeRequest request) {
-        try {
-            String res = userService.verifyCode(request.getCode(), request.getEmail());
-            if(res.equals("Success")) {
-                return ResponseEntity.ok(new ApiResponse(res, null));
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", res));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
-        }
-    }
-
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
         try {
             userService.resetPassword(request);
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", e.getMessage()));
         }
     }
 

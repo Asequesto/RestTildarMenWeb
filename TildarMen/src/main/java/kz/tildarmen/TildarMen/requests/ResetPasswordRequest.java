@@ -8,5 +8,6 @@ public class ResetPasswordRequest {
     String email;
     String password;
     String confirmPassword;
+    Integer code;
 
 }

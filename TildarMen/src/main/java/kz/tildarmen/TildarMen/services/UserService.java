@@ -256,27 +256,6 @@ public class UserService {
 
     }
 
-    public String verifyCode(Integer code, String email){
-        User user = userRepository.findByEmail(email);
-        if(user == null){
-            throw new RuntimeException("User not found");
-        }
-        ResetPasswordToken token = resetPasswordTokenRepository.findByUser(user);
-        if(token == null){
-            throw new RuntimeException("Token not found");
-        }
-        Date now = new Date();
-        if(now.before(token.getExpiryDate())){
-            if(code.equals(token.getToken())){
-                deleteToken(email);
-                return "Success";
-            }
-            return "Invalid verification code";
-        }
-        return "Token expired";
-
-    }
-
     public void deleteToken(String email){
         User user = userRepository.findByEmail(email);
         resetPasswordTokenRepository.deleteByUser(user);
@@ -290,6 +269,18 @@ public class UserService {
         if(!request.getPassword().equals(request.getConfirmPassword())){
             throw new RuntimeException("Passwords do not match");
         }
+        ResetPasswordToken token = resetPasswordTokenRepository.findByUser(user);
+        if(token == null){
+            throw new RuntimeException("Token not found");
+        }
+        Date now = new Date();
+        if(!now.before(token.getExpiryDate())){
+            throw new RuntimeException("Token expired");
+        }
+        if(!request.getCode().equals(token.getToken())){
+            throw new RuntimeException("Invalid verification code");
+        }
+        deleteToken(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
