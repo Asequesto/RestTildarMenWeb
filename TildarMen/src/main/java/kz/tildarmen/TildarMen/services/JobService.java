@@ -37,7 +37,7 @@ public class JobService {
     }
 
     public List<JobDto> getJobsByEmployerId(Long employerId) {
-        List<Job> jobs = jobRepository.findAllByEmployerId(employerId);
+        List<Job> jobs = jobRepository.findAllByEmployerIdOrderByPublicationDateDesc(employerId);
         employerService.getEmployerById(employerId);
         return jobMapper.toDtoList(jobs);
     }

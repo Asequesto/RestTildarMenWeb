@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 @Transactional
 public interface JobRepository extends JpaRepository<Job, Long> {
-    List<Job> findAllByEmployerId(Long employerId);
+    List<Job> findAllByEmployerIdOrderByPublicationDateDesc(Long employerId);
 
     @Query("SELECT j FROM Job j " +
             "LEFT JOIN j.languages l " +
