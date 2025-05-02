@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class EducationDto {
 
+    private Long id;
     private String degree;
     private String degreeUrl;
     private String university;
