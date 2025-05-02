@@ -1,6 +1,8 @@
 package kz.tildarmen.TildarMen.controller;
 
 import kz.tildarmen.TildarMen.dto.JobDto;
+import kz.tildarmen.TildarMen.mapper.JobMapper;
+import kz.tildarmen.TildarMen.model.Job;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.SearchJobsRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
@@ -22,12 +24,23 @@ public class JobController {
 
     private final JobService jobService;
     private final AuthService authService;
+    private final JobMapper jobMapper;
 
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllJobs() {
         List<JobDto> jobs = jobService.getAllJobs();
         return ResponseEntity.ok(new ApiResponse("Success", jobs));
+    }
+
+    @GetMapping("/job/{id}")
+    public ResponseEntity<ApiResponse> getJobById(@PathVariable Long id) {
+        try {
+            Job job = jobService.getJobById(id);
+            return ResponseEntity.ok(new ApiResponse("Success", jobMapper.toDto(job)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error", e.getMessage()));
+        }
     }
 
     @PostMapping("/filter")
