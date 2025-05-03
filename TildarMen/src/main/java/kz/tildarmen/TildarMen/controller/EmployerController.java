@@ -6,6 +6,7 @@ import kz.tildarmen.TildarMen.dto.JobRequestDto;
 import kz.tildarmen.TildarMen.dto.JobTranslatorsDto;
 import kz.tildarmen.TildarMen.mapper.GetEmployerProfileMapper;
 import kz.tildarmen.TildarMen.model.Employer;
+import kz.tildarmen.TildarMen.model.Job;
 import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.requests.GetEmployerProfile;
 import kz.tildarmen.TildarMen.requests.UpdatePasswordRequest;
@@ -89,7 +90,8 @@ public class EmployerController {
     public ResponseEntity<ApiResponse> getAllEmployerJobApplications(@PathVariable Long id,
                                                                      @AuthenticationPrincipal User userDetails) {
         try {
-            authService.checkPermission(userDetails, id);
+            Job job = jobService.getJobById(id);
+            authService.checkPermission(userDetails, job.getEmployer().getId());
             List<JobApplicationDto> requests = jobApplicationService.getEmployerApplications(id);
             return ResponseEntity.ok(new ApiResponse("Success", requests));
         }  catch (SecurityException e){
@@ -105,7 +107,8 @@ public class EmployerController {
     public ResponseEntity<ApiResponse> getAllJobTranslators(@PathVariable Long id,
                                                             @AuthenticationPrincipal User userDetails) {
         try {
-            authService.checkPermission(userDetails, id);
+            Job job = jobService.getJobById(id);
+            authService.checkPermission(userDetails, job.getEmployer().getId());
             List<JobTranslatorsDto> translators = jobService.getJobTranslators(id);
             return ResponseEntity.ok(new ApiResponse("Success", translators));
         }  catch (SecurityException e){

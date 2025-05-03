@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 
 @Repository
 @Transactional
@@ -18,4 +20,9 @@ public interface ResetPasswordTokenRepository extends JpaRepository<ResetPasswor
     @Modifying
     @Query("DELETE FROM ResetPasswordToken t WHERE t.user = :user")
     void deleteByUser(@Param("user") User user);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM ResetPasswordToken t WHERE t.expiryDate < :now")
+    void deleteAllExpiredTokens(LocalDateTime now);
 }
