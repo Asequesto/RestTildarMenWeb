@@ -548,6 +548,7 @@ public class TranslatorController {
             Translator translator = translatorService.getTranslatorById(id);
             imageService.deleteImage(translator.getProjectUrls().get(projectId - 1));
             translator.getProjectUrls().remove(projectId - 1);
+            translatorRepository.save(translator);
             return ResponseEntity.ok(new ApiResponse("Successfully deleted project", null));
         } catch (SecurityException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
