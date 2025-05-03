@@ -34,6 +34,9 @@ public class JobApplicationController {
         } catch (SecurityException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse("Forbidden", e.getMessage()));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .body(new ApiResponse("Bad request", e.getMessage()));
         }
         catch (MessagingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

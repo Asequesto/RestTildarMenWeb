@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Transactional
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
+    boolean existsByTranslatorIdAndJobId(Long translatorId, Long jobId);
 }

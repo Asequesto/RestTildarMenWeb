@@ -48,7 +48,9 @@ public class JobRequestService {
         Employer employer = employerService.getEmployerById(employerId);
         Translator translator = translatorService.getTranslatorById(translatorId);
         Job job = jobService.getJobById(jobId);
-
+        if(jobRequestRepository.existsByTranslatorIdAndJobId(translatorId, jobId)){
+            throw new IllegalArgumentException("You already have a request for this translator");
+        }
         JobRequest jobRequest = new JobRequest();
         jobRequest.setEmployer(employer);
         jobRequest.setTranslator(translator);

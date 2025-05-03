@@ -47,7 +47,9 @@ public class JobApplicationService {
     public JobApplicationDto sendApplication(Long translatorId, Long jobId) throws MessagingException {
         Translator translator = translatorService.getTranslatorById(translatorId);
         Job job = jobService.getJobById(jobId);
-
+        if(jobApplicationRepository.existsByTranslatorIdAndJobId(translatorId, jobId)){
+            throw new IllegalArgumentException("You already sent job application");
+        }
         JobApplication application = new JobApplication();
         application.setJob(job);
         application.setTranslator(translator);
