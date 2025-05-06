@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -284,5 +285,9 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
+    }
+
+    public List<User> findByIdIn(List<Long> userIds) {
+        return userRepository.findByIdIn(userIds);
     }
 }

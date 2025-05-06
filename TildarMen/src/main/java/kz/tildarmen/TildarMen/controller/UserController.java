@@ -1,6 +1,8 @@
 package kz.tildarmen.TildarMen.controller;
 
 import jakarta.mail.MessagingException;
+import kz.tildarmen.TildarMen.chatroom.ChatRoom;
+import kz.tildarmen.TildarMen.chatroom.ChatRoomRepository;
 import kz.tildarmen.TildarMen.dto.SearchTranslatorDto;
 import kz.tildarmen.TildarMen.dto.TranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
@@ -17,6 +19,8 @@ import kz.tildarmen.TildarMen.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -33,6 +37,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final TranslatorMapper translatorMapper;
     private final EmailVerifyTokenRepository emailVerifyTokenRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
@@ -146,6 +151,16 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Error", e.getMessage()));
         }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/chats")
+    public ResponseEntity<ApiResponse> getChats(@AuthenticationPrincipal User user) {
+        List<ChatRoom> rooms = chatRoomRepository.findAllBySenderId(user.getId().toString());
+        List<Long> userIds = rooms.stream().map
+                (room -> Long.parseLong(room.getSenderId())).distinct().toList();
+        List<User> users = userService.findByIdIn(userIds);
+        return ResponseEntity.ok(new ApiResponse("Success", userMapper.toDtoList(users)));
     }
 
 

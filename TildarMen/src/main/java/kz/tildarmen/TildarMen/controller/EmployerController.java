@@ -54,6 +54,7 @@ public class EmployerController {
         }
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/{id}/jobs")
     public ResponseEntity<ApiResponse> getAllEmployerJobs(@PathVariable Long id,
                                                           @AuthenticationPrincipal User userDetails) {
