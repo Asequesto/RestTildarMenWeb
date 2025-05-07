@@ -37,7 +37,7 @@ public class TildarMenConfig {
     private final JwtAuthEntryPoint authEntryPoint;
 
     private static final List<String> SECURED_URLS =
-            List.of("/translator/**","/employer/**", "/ws/**");
+            List.of("/translator/**","/employer/**");
 
     @Bean
     public PasswordEncoder passwordEncoder() {
