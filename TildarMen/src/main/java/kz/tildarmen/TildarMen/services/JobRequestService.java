@@ -37,10 +37,10 @@ public class JobRequestService {
         return jobRequestMapper.toDtoList(employer.getJobRequests());
     }
 
-    public List<JobRequestDto> getTranslatorRequests(Long id){
-        Translator translator = translatorService.getTranslatorById(id);
-        return jobRequestMapper.toDtoList(translator.getJobRequests());
-    }
+        public List<JobRequestDto> getTranslatorRequests(Long id){
+            Translator translator = translatorService.getTranslatorById(id);
+            return jobRequestMapper.toDtoList(translator.getJobRequests());
+        }
 
 
     public JobRequestDto sendRequest(Long employerId, Long translatorId, Long jobId) throws MessagingException {

@@ -10,6 +10,7 @@ import kz.tildarmen.TildarMen.requests.SearchJobsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,7 @@ public class JobService {
         List<JobTranslatorsDto> requests = jobTranslatorsMapper.fromRequestList(job.getJobRequests());
         List<JobTranslatorsDto> applications = jobTranslatorsMapper.fromApplicationList(job.getApplications());
         applications.addAll(requests);
+        applications.sort(Comparator.comparing(JobTranslatorsDto::getSendAt).reversed());
         return applications;
     }
 

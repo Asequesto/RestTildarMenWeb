@@ -92,8 +92,7 @@ public class TranslatorController {
                                                                      @AuthenticationPrincipal User userDetails) {
         try {
             authService.checkPermission(userDetails, id);
-            List<JobApplicationDto> applications = jobApplicationService.getTranslatorApplications(id);
-            return ResponseEntity.ok(new ApiResponse("Success", applications));
+            return ResponseEntity.ok(new ApiResponse("Success",  jobApplicationService.getTranslatorApplications(id)));
         } catch (SecurityException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ApiResponse("Forbidden", e.getMessage()));
