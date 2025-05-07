@@ -4,10 +4,6 @@ import kz.tildarmen.TildarMen.security.jwt.AuthTokenFilter;
 import kz.tildarmen.TildarMen.security.jwt.JwtAuthEntryPoint;
 import kz.tildarmen.TildarMen.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -95,27 +91,6 @@ public class TildarMenConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    public ServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
-            @Override
-            protected void postProcessContext(Context context) {
-            }
-        };
-
-        tomcat.addAdditionalTomcatConnectors(httpConnector());
-        return tomcat;
-    }
-
-    private Connector httpConnector() {
-        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-        connector.setScheme("http");
-        connector.setPort(8080);
-        connector.setSecure(false);
-        connector.setRedirectPort(8443);
-        return connector;
     }
 
 }
