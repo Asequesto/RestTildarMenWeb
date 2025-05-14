@@ -19,6 +19,7 @@ public interface JobTranslatorsMapper {
     @Mapping(source = "id", target = "applicationId")
     @Mapping(source = "appliedAt", target = "sendAt")
     @Mapping(source = "job.price", target = "price")
+    @Mapping(target = "type", constant = "Application")
     JobTranslatorsDto fromApplication(JobApplication jobApplication);
 
     @Mapping(source = "translator.firstName", target = "firstName")
@@ -28,6 +29,7 @@ public interface JobTranslatorsMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "requestedAt", target = "sendAt")
     @Mapping(source = "job.price", target = "price")
+    @Mapping(target = "type", constant = "Request")
     JobTranslatorsDto fromRequest(JobRequest jobRequest);
 
     List<JobTranslatorsDto> fromApplicationList(List<JobApplication> jobApplicationList);

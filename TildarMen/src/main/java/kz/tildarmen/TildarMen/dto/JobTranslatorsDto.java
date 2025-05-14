@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class JobTranslatorsDto {
 
     private String applicationId;
+    private String type;
     private String firstName;
     private String lastName;
     private String profileImageUrl;
