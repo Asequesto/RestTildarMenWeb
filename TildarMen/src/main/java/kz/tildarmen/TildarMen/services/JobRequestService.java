@@ -96,7 +96,7 @@ public class JobRequestService {
         jobRequest.setStatus(RequestStatus.valueOf(status.toUpperCase()));
         User user = userService.getAuthenticatedUser();
         Job job = jobRequest.getJob();
-        authService.checkPermission(userDetails, job.getEmployer().getId());
+        authService.checkPermission(userDetails, jobRequest.getTranslator().getId());
 
         String email = jobRequest.getEmployer().getEmail();
         String subject = "Job Request " + jobRequestId +  " Responded";
