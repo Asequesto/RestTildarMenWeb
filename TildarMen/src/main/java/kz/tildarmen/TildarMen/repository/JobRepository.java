@@ -38,4 +38,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             @Param("endDate") LocalDateTime endDate,
             String jobTitle
     );
+
+    List<Job> findTop8ByOrderByPublicationDateDesc();
 }

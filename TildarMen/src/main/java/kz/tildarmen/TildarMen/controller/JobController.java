@@ -43,6 +43,12 @@ public class JobController {
         }
     }
 
+    @GetMapping("/firstEight")
+    public ResponseEntity<ApiResponse> getFirstEightJobs() {
+        List<JobDto> jobs = jobService.getFirstEightJobs();
+        return ResponseEntity.ok(new ApiResponse("Success", jobs));
+    }
+
     @PostMapping("/filter")
     public ResponseEntity<ApiResponse> getFilteredJobs(@RequestBody(required = false) SearchJobsRequest request,
                                                        @RequestParam(required = false) String title) {

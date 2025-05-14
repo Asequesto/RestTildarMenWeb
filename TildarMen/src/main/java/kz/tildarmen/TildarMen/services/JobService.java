@@ -43,6 +43,11 @@ public class JobService {
         return jobMapper.toDtoList(jobs);
     }
 
+    public List<JobDto> getFirstEightJobs() {
+        List<Job> jobs = jobRepository.findTop8ByOrderByPublicationDateDesc();
+        return jobMapper.toDtoList(jobs);
+    }
+
     public Job getJobById(Long jobId) {
         return jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
@@ -133,4 +138,5 @@ public class JobService {
         Job job = getJobById(jobId);
         jobRepository.delete(job);
     }
+
 }
