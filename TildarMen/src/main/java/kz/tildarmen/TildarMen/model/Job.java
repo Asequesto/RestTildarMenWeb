@@ -47,6 +47,9 @@ public class Job {
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JobApplication> applications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "reportedJob", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "job_languages",

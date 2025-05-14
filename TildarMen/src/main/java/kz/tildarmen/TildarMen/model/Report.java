@@ -29,6 +29,7 @@ public class Report {
     private User reporter;
 
     @ManyToOne
+    @JoinColumn(name = "reported_job_id", nullable = false)
     private Job reportedJob;
 
     @ManyToOne

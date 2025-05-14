@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class TranslatorsJobsDto {
 
+    private Long applicationId;
     private String type;
     private RequestStatus status;
     private LocalDateTime appliedAt;

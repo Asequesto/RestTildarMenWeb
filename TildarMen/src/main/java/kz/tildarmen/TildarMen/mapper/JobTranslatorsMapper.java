@@ -16,6 +16,7 @@ public interface JobTranslatorsMapper {
     @Mapping(source = "translator.rating", target = "rating")
     @Mapping(source = "translator.profileImageUrl", target = "profileImageUrl")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "id", target = "applicationId")
     @Mapping(source = "appliedAt", target = "sendAt")
     @Mapping(source = "job.price", target = "price")
     JobTranslatorsDto fromApplication(JobApplication jobApplication);
@@ -23,6 +24,7 @@ public interface JobTranslatorsMapper {
     @Mapping(source = "translator.firstName", target = "firstName")
     @Mapping(source = "translator.lastName", target = "lastName")
     @Mapping(source = "translator.rating", target = "rating")
+    @Mapping(source = "id", target = "applicationId")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "requestedAt", target = "sendAt")
     @Mapping(source = "job.price", target = "price")

@@ -12,10 +12,12 @@ import java.util.List;
 public interface TranslatorsJobsMapper {
 
     @Mapping(target = "type", constant = "Application")
+    @Mapping(source = "id", target = "applicationId")
     TranslatorsJobsDto fromApplication(JobApplication application);
 
 
     @Mapping(source = "requestedAt", target = "appliedAt")
+    @Mapping(source = "id", target = "applicationId")
     @Mapping(target = "type", constant = "Request")
     TranslatorsJobsDto fromRequest(JobRequest request);
 

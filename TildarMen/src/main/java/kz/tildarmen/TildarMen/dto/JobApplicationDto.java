@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class JobApplicationDto {
 
+    private Long id;
     private String type = "application";
     private RequestStatus status;
     private LocalDateTime appliedAt;
