@@ -62,7 +62,8 @@ public class ReportService {
         report.setReason(ReportReason.valueOf(reportDto.getReason().toUpperCase()));
         report.setTitle(reportDto.getTitle());
         report.setDetails(reportDto.getDetails());
-        report.setFileUrl(imageService.uploadFile(file));
+        if(file == null || file.isEmpty()) report.setFileUrl(null);
+        else report.setFileUrl(imageService.uploadFile(file));
         report.setCreatedAt(LocalDateTime.now());
         report.setReporter(user);
         return report;
