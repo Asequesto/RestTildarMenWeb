@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.controller;
 
+import kz.tildarmen.TildarMen.dto.Job8Dto;
 import kz.tildarmen.TildarMen.dto.JobDto;
 import kz.tildarmen.TildarMen.mapper.JobMapper;
 import kz.tildarmen.TildarMen.model.Job;
@@ -45,7 +46,7 @@ public class JobController {
 
     @GetMapping("/firstEight")
     public ResponseEntity<ApiResponse> getFirstEightJobs() {
-        List<JobDto> jobs = jobService.getFirstEightJobs();
+        List<Job8Dto> jobs = jobService.getFirstEightJobs();
         return ResponseEntity.ok(new ApiResponse("Success", jobs));
     }
 

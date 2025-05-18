@@ -1,6 +1,7 @@
 package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
+import kz.tildarmen.TildarMen.dto.Job8Dto;
 import kz.tildarmen.TildarMen.dto.JobDto;
 import kz.tildarmen.TildarMen.dto.JobTranslatorsDto;
 import kz.tildarmen.TildarMen.mapper.*;
@@ -43,9 +44,9 @@ public class JobService {
         return jobMapper.toDtoList(jobs);
     }
 
-    public List<JobDto> getFirstEightJobs() {
+    public List<Job8Dto> getFirstEightJobs() {
         List<Job> jobs = jobRepository.findTop8ByOrderByPublicationDateDesc();
-        return jobMapper.toDtoList(jobs);
+        return jobMapper.toDto8List(jobs);
     }
 
     public Job getJobById(Long jobId) {
