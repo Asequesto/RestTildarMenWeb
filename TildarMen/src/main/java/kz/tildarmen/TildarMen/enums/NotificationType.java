@@ -1,0 +1,14 @@
+package kz.tildarmen.TildarMen.enums;
+
+public enum NotificationType {
+    WELCOME,
+    JOB_POSTED,
+    APPLICATION_SEND,
+    APPLICATION_RECEIVED,
+    APPLICATION_RESPONDED,
+    REQUEST_SEND,
+    REQUEST_RECEIVED,
+    REQUEST_RESPONDED,
+    PAYMENT_SENT,
+    PAYMENT_RECEIVED
+}

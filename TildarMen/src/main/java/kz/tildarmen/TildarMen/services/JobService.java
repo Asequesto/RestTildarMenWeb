@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.Job8Dto;
 import kz.tildarmen.TildarMen.dto.JobDto;
 import kz.tildarmen.TildarMen.dto.JobTranslatorsDto;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.mapper.*;
 import kz.tildarmen.TildarMen.model.*;
 import kz.tildarmen.TildarMen.repository.JobRepository;
@@ -32,6 +33,7 @@ public class JobService {
     private final ServiceTypesMapper serviceTypesMapper;
     private final SpecializationMapper specializationMapper;
     private final JobTranslatorsMapper jobTranslatorsMapper;
+    private final NotificationService notificationService;
 
     public List<JobDto> getAllJobs() {
         List<Job> jobs = jobRepository.findAll();
@@ -98,6 +100,9 @@ public class JobService {
         job.setServiceTypes(addServiceTypes(serviceTypesMapper.toEntitySet(jobDto.getServiceTypes())));
         job.setSpecializations(addSpecializations(specializationMapper.toEntitySet(jobDto.getSpecializations())));
         job.setEmployer(employer);
+        notificationService.sendNotification(employer, "Project has been posted!", "Your project " +
+                job.getTitle() + " has been posted. You can check it on the projects catalog",
+                NotificationType.JOB_POSTED);
         return jobMapper.toDto(jobRepository.save(job));
     }
 

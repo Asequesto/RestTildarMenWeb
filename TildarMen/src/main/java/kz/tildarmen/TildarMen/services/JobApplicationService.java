@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.JobApplicationDto;
 import kz.tildarmen.TildarMen.dto.TranslatorsJobsDto;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.enums.RequestStatus;
 import kz.tildarmen.TildarMen.mapper.JobApplicationMapper;
 import kz.tildarmen.TildarMen.mapper.TranslatorsJobsMapper;
@@ -32,6 +33,7 @@ public class JobApplicationService {
     private final UserService userService;
     private final AuthService authService;
     private final TranslatorsJobsMapper translatorsJobsMapper;
+    private final NotificationService notificationService;
 
     public JobApplication findById(Long id) {
         return jobApplicationRepository.findById(id)
@@ -91,6 +93,9 @@ public class JobApplicationService {
     """.formatted(fullName, job.getTitle());
 
         emailSenderService.sendEmail(email, subject, message);
+        notificationService.sendNotification(translator,"New Project Application Received","Translator "
+                + translator.getFirstName() + " " + translator.getLastName() + " wants to apply to your project." +
+                " You can respond to him in your profile and chat with him", NotificationType.APPLICATION_SEND);
 
         return jobApplicationMapper.toDto(jobApplicationRepository.save(application));
     }
@@ -123,6 +128,10 @@ public class JobApplicationService {
             """.formatted(job.getTitle(), status, user.getFirstName(), user.getLastName());
 
         emailSenderService.sendEmail(email, subject, message);
+        notificationService.sendNotification(application.getTranslator()
+                ,"You project application has been " + status,"Employer "
+                + user.getFirstName() + " " + user.getLastName() + " has " + status +
+                " your project application!", NotificationType.APPLICATION_RESPONDED);
         application.setStatus(RequestStatus.valueOf(status.toUpperCase()));
     }
 

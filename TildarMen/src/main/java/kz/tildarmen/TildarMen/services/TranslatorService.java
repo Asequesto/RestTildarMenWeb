@@ -5,6 +5,7 @@ import kz.tildarmen.TildarMen.dto.SearchTranslatorDto;
 import kz.tildarmen.TildarMen.dto.TranslatorDto;
 import kz.tildarmen.TildarMen.dto.UserDto;
 import kz.tildarmen.TildarMen.enums.AvailabilityStatus;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.enums.Role;
 import kz.tildarmen.TildarMen.mapper.SearchTranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
@@ -33,6 +34,7 @@ public class TranslatorService {
     private final SpecializationService specializationService;
     private final LocationService locationService;
     private final SearchTranslatorMapper searchTranslatorMapper;
+    private final NotificationService notificationService;
 
 
     public Translator getTranslatorById(Long id) {
@@ -50,6 +52,10 @@ public class TranslatorService {
             translator.setFirstName(request.getFirstName());
             translator.setLastName(request.getLastName());
             translator.setPassword(passwordEncoder.encode(request.getPassword()));
+            notificationService.sendNotification(translator, "We're excited to have you on board!",
+                    "Start building your profile, showcase your skills," +
+                            " and connect with clients looking for expert translators like you.",
+                    NotificationType.WELCOME);
             return userMapper.toUserDto(translatorRepository.save(translator));
         }
         return null;

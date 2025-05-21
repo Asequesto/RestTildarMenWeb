@@ -6,6 +6,7 @@ import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.model.Job;
 import kz.tildarmen.TildarMen.model.Transaction;
 import kz.tildarmen.TildarMen.model.Translator;
@@ -13,10 +14,7 @@ import kz.tildarmen.TildarMen.model.User;
 import kz.tildarmen.TildarMen.repository.TransactionRepository;
 import kz.tildarmen.TildarMen.requests.StripeAccCreateRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
-import kz.tildarmen.TildarMen.services.AuthService;
-import kz.tildarmen.TildarMen.services.JobService;
-import kz.tildarmen.TildarMen.services.StripeService;
-import kz.tildarmen.TildarMen.services.TranslatorService;
+import kz.tildarmen.TildarMen.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +34,7 @@ public class StripeController {
     private final JobService jobService;
     private final TransactionRepository transactionRepository;
     private final AuthService authService;
+    private final NotificationService notificationService;
 
 
     @PreAuthorize("hasAnyAuthority('TRANSLATOR')")
@@ -125,6 +124,14 @@ public class StripeController {
                 transaction.setDescription(job.getTitle());
                 transaction.setEmployer(job.getEmployer());
                 transaction.setPrice(job.getPrice());
+
+                notificationService.sendNotification(job.getEmployer(),
+                        "Payment Successful.",
+                        "Your payment of + " + job.getPrice() + "₸ has been successfully transferred.",
+                        NotificationType.PAYMENT_SENT);
+                notificationService.sendNotification(translator, "Payment Received",
+                        "You've revceived a " + job.getPrice() + "₸ payment for the project " +
+                        job.getTitle(), NotificationType.PAYMENT_RECEIVED);
 
                 transactionRepository.save(transaction);
             } else{

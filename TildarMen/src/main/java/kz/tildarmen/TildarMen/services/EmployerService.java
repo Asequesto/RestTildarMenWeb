@@ -2,6 +2,7 @@ package kz.tildarmen.TildarMen.services;
 
 import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.UserDto;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.enums.Role;
 import kz.tildarmen.TildarMen.mapper.UserMapper;
 import kz.tildarmen.TildarMen.model.*;
@@ -28,6 +29,7 @@ public class EmployerService {
     private final UserRepository userRepository;
     private final LocationService locationService;
     private final ReviewService reviewService;
+    private final NotificationService notificationService;
 
     public Employer getEmployerById(Long id) {
         return employerRepository.findById(id)
@@ -49,6 +51,10 @@ public class EmployerService {
             employer.setLastName(request.getLastName());
             employer.setPassword(passwordEncoder.encode(request.getPassword()));
             employer.setRole(Role.valueOf(request.getRole().toUpperCase()));
+            notificationService.sendNotification(employer, "Welcome to TildarMen",
+                    "Post your first translation job and connect " +
+                            "with top-quality translators ready to help you reach the world.",
+                    NotificationType.WELCOME);
             return userMapper.toUserDto(employerRepository.save(employer));
         }
         return null;

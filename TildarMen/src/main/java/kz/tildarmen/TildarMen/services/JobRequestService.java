@@ -3,6 +3,7 @@ package kz.tildarmen.TildarMen.services;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import kz.tildarmen.TildarMen.dto.JobRequestDto;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.enums.RequestStatus;
 import kz.tildarmen.TildarMen.mapper.JobRequestMapper;
 import kz.tildarmen.TildarMen.model.*;
@@ -26,6 +27,7 @@ public class JobRequestService {
     private final EmailSenderService emailSenderService;
     private final UserService userService;
     private final AuthService authService;
+    private final NotificationService notificationService;
 
     public JobRequest findById(Long id) {
         return jobRequestRepository.findById(id)
@@ -85,6 +87,9 @@ public class JobRequestService {
     """.formatted(fullName, job.getTitle());
 
         emailSenderService.sendEmail(email, subject, message);
+        notificationService.sendNotification(translator,"New Project Request Received","Employer "
+                + employer.getFirstName() + " " + employer.getLastName() + " wants to hire you." +
+                " You can respond to him in your profile and chat with him", NotificationType.REQUEST_SEND);
 
         return jobRequestMapper.toDto(jobRequestRepository.save(jobRequest));
 
@@ -126,8 +131,11 @@ public class JobRequestService {
             </html>
             """.formatted(job.getTitle(), status, user.getFirstName(), user.getLastName());
 
-
         emailSenderService.sendEmail(email, subject, message);
+        notificationService.sendNotification(jobRequest.getEmployer()
+                ,"You project request has been " + status,"Translator "
+                        + user.getFirstName() + " " + user.getLastName() + " has " + status +
+                        " your project request!", NotificationType.REQUEST_RESPONDED);
         jobRequestRepository.save(jobRequest);
     }
 
