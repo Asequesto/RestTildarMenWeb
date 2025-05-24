@@ -72,14 +72,27 @@ public class TranslatorService {
         List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
                 .stream().map(Specialization::getId).toList();
         AvailabilityStatus status =  null;
+        int languageSize = languages.size();
+        int specializationSize = specializations.size();
+        int serviceSize = services.size();
         if(request.getLocations() == null || request.getLocations().isEmpty()) locations = null;
-        if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()) services = null;
-        if(request.getSpecializations() == null || request.getSpecializations().isEmpty()) specializations = null;
-        if(request.getLanguages() == null || request.getLanguages().isEmpty()) languages = null;
+        if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()){
+            services = null;
+            serviceSize = 0;
+        }
+        if(request.getSpecializations() == null || request.getSpecializations().isEmpty()){
+            specializations = null;
+            specializationSize = 0;
+        }
+        if(request.getLanguages() == null || request.getLanguages().isEmpty()) {
+            languages = null;
+            languageSize = 0;
+        }
         if(request.getAvailability() != null) status = AvailabilityStatus.valueOf(request.getAvailability().toUpperCase());
         return searchTranslatorMapper.toDtoList(
                 translatorRepository.filterTranslators(username, status,
-                        languages, services, specializations, locations));
+                        languages, languageSize, services,
+                        serviceSize, specializations, specializationSize, locations));
     }
 
     public UserDto updateTranslatorAccountSettings(UpdateUserRequest request, Long id) {
