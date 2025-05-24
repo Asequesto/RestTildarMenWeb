@@ -65,20 +65,33 @@ public class JobService {
     }
 
     public List<JobDto> filterJobs(SearchJobsRequest request, String title) {
-        Long location;
-        if(request.getLocation() == null || request.getLocation().isEmpty()) location = null;
-        else location = locationService.getLocationByName(request.getLocation()).getId();
-        List<Long> languages = languageService.getAllByName(request.getLanguages())
-                .stream().map(Language::getId).toList();
         List<Long> services = serviceTypesService.getAllByName(request.getServiceTypes())
                 .stream().map(ServiceTypes::getId).toList();
+        List<Long> locations = locationService.getAllByName(request.getLocations())
+                .stream().map(Location::getId).toList();
+        List<Long> languages = languageService.getAllByName(request.getLanguages())
+                .stream().map(Language::getId).toList();
         List<Long> specializations = specializationService.getAllByName(request.getSpecializations())
                 .stream().map(Specialization::getId).toList();
-        if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()) services = null;
-        if(request.getSpecializations() == null || request.getSpecializations().isEmpty()) specializations = null;
-        if(request.getLanguages() == null || request.getLanguages().isEmpty()) languages = null;
+        int languageSize = languages.size();
+        int specializationSize = specializations.size();
+        int serviceSize = services.size();
+        if(request.getSpecializations() == null || request.getSpecializations().isEmpty()){
+            specializations = null;
+            specializationSize = 0;
+        }
+        if(request.getLocations() == null || request.getLocations().isEmpty()) locations = null;
+        if(request.getServiceTypes() == null || request.getServiceTypes().isEmpty()){
+            services = null;
+            serviceSize = 0;
+        }
+        if(request.getLanguages() == null || request.getLanguages().isEmpty()) {
+            languages = null;
+            languageSize = 0;
+        }
         return jobMapper.toDtoList(jobRepository
-                .filterJobs(languages, services, specializations, location,
+                .filterJobs(languages, languageSize, services, serviceSize, specializations, specializationSize,
+                        locations,
                         request.getStartDate(), request.getEndDate(), title));
     }
 
