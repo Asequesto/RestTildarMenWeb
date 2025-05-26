@@ -15,7 +15,7 @@ public class StripeAccount {
 
     private String stripeId;
 
-    @ManyToOne
+    @OneToOne
     private User user;
 
 }
