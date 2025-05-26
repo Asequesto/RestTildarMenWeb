@@ -2,15 +2,15 @@ package kz.tildarmen.TildarMen.controller;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import jakarta.servlet.http.HttpServletRequest;
 import kz.tildarmen.TildarMen.enums.NotificationType;
-import kz.tildarmen.TildarMen.model.Job;
-import kz.tildarmen.TildarMen.model.Transaction;
-import kz.tildarmen.TildarMen.model.Translator;
-import kz.tildarmen.TildarMen.model.User;
+import kz.tildarmen.TildarMen.model.*;
+import kz.tildarmen.TildarMen.repository.StripeAccountRepository;
 import kz.tildarmen.TildarMen.repository.TransactionRepository;
 import kz.tildarmen.TildarMen.requests.StripeAccCreateRequest;
 import kz.tildarmen.TildarMen.response.ApiResponse;
@@ -22,7 +22,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,6 +37,7 @@ public class StripeController {
     private final TransactionRepository transactionRepository;
     private final AuthService authService;
     private final NotificationService notificationService;
+    private final StripeAccountRepository stripeAccountRepository;
 
 
     @PreAuthorize("hasAnyAuthority('TRANSLATOR')")
@@ -95,6 +98,44 @@ public class StripeController {
         }
     }
 
+    @PostMapping("/webhook/onboarding")
+    public ResponseEntity<ApiResponse> webhookOnboarding(HttpServletRequest request) {
+        String payload;
+        String sigHeader = request.getHeader("Stripe-Signature");
+        String endpointSecret = "whsec_zcoXe1XabirKDyFl24JVguJzOPfMnojD";
+
+        try (Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A")) {
+            payload = s.hasNext() ? s.next() : "";
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Failed to read payload", e.getMessage()));
+        }
+
+        Event event;
+        try {
+            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+        } catch (SignatureVerificationException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Invalid signature", e.getMessage()));
+        }
+
+        if ("account.updated".equals(event.getType())) {
+            var deserializer = event.getDataObjectDeserializer();
+            if (deserializer.getObject().isPresent()) {
+                Account account = (Account) deserializer.getObject().get();
+                if (account.getChargesEnabled() && account.getDetailsSubmitted()) {
+                    System.out.println("Onboarding completed for account: " + account.getId());
+                    StripeAccount stripeAccount = new StripeAccount();
+                    Translator translator = translatorService.
+                            getTranslatorById(Long.valueOf(account.getMetadata().get("translatorId")));
+                    stripeAccount.setUser(translator);
+                    stripeAccount.setStripeId(account.getId());
+                    stripeAccountRepository.save(stripeAccount);
+                }
+            }
+        }
+
+        return ResponseEntity.ok(new ApiResponse("Success", null));
+    }
+
     @PostMapping("/webhook")
     public ResponseEntity<ApiResponse> handleStripeWebhook(@RequestBody String payload,
                                                            @RequestHeader("Stripe-Signature") String sigHeader){
@@ -130,7 +171,7 @@ public class StripeController {
                         "Your payment of + " + job.getPrice() + "₸ has been successfully transferred.",
                         NotificationType.PAYMENT_SENT);
                 notificationService.sendNotification(translator, "Payment Received",
-                        "You've revceived a " + job.getPrice() + "₸ payment for the project " +
+                        "You've received a " + job.getPrice() + "₸ payment for the project " +
                         job.getTitle(), NotificationType.PAYMENT_RECEIVED);
 
                 transactionRepository.save(transaction);

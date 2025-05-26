@@ -72,6 +72,7 @@ public class StripeService {
                                 .setPayments(AccountCreateParams.Controller.Losses.Payments.APPLICATION)
                                 .build())
                         .build())
+                .putMetadata("translatorId", String.valueOf(translator.getId()))
                 .build();
 
         Account account = Account.create(params);
@@ -87,10 +88,7 @@ public class StripeService {
         request.setAccountId(account.getId());
         request.setOnboardingUrl(link.getUrl());
 
-        StripeAccount stripeAccount = new StripeAccount();
-        stripeAccount.setUser(translator);
-        stripeAccount.setStripeId(account.getId());
-        stripeAccountRepository.save(stripeAccount);
+
 
         return request;
 
