@@ -78,8 +78,8 @@ public class StripeService {
         Account account = Account.create(params);
         AccountLinkCreateParams linkParams = AccountLinkCreateParams.builder()
                 .setAccount(account.getId())
-                .setRefreshUrl("http://localhost:3000/fail/")
-                .setReturnUrl("http://localhost:3000/success/")
+                .setRefreshUrl("https://tildarmen-front.vercel.app/fail/")
+                .setReturnUrl("https://tildarmen-front.vercel.app/success/")
                 .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                 .build();
         AccountLink link = AccountLink.create(linkParams);
@@ -123,8 +123,8 @@ public class StripeService {
                                 .build()
                 )
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:3000/payment-success/")
-                .setCancelUrl("http://localhost:3000/payment-cancel/")
+                .setSuccessUrl("https://tildarmen-front.vercel.app/payment-success/")
+                .setCancelUrl("https://tildarmen-front.vercel.app/payment-cancel/")
                 .setClientReferenceId(translator.getId().toString())
                 .putMetadata("jobId", jobId.toString())
                 .build();
