@@ -102,7 +102,7 @@ public class StripeController {
     public ResponseEntity<ApiResponse> webhookOnboarding(HttpServletRequest request) {
         String payload;
         String sigHeader = request.getHeader("Stripe-Signature");
-        String endpointSecret = "whsec_zcoXe1XabirKDyFl24JVguJzOPfMnojD";
+        String endpointSecret = "whsec_o8dBCKKLQBnm80zoa1PIZWD4ljz83pya";
 
         try (Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A")) {
             payload = s.hasNext() ? s.next() : "";
