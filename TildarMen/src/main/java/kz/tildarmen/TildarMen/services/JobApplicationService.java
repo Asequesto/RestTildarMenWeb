@@ -93,7 +93,7 @@ public class JobApplicationService {
     """.formatted(fullName, job.getTitle());
 
         emailSenderService.sendEmail(email, subject, message);
-        notificationService.sendNotification(translator,"New Project Application Received","Translator "
+        notificationService.sendNotification(job.getEmployer(),"New Project Application Received","Translator "
                 + translator.getFirstName() + " " + translator.getLastName() + " wants to apply to your project." +
                 " You can respond to him in your profile and chat with him", NotificationType.APPLICATION_SEND);
 
