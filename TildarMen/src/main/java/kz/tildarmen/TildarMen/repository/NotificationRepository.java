@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 @Transactional
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> getAllByUser(User user);
+    List<Notification> getAllByUserOrderBySendAtDesc(User user);
 }

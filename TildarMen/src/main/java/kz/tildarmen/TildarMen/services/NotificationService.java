@@ -33,7 +33,7 @@ public class NotificationService {
     }
 
     public List<NotificationDto> getAllUserNotifications(User user) {
-        return notificationMapper.toDtoList(notificationRepository.getAllByUser(user));
+        return notificationMapper.toDtoList(notificationRepository.getAllByUserOrderBySendAtDesc(user));
     }
 
     public NotificationDto getById(Long id) {
