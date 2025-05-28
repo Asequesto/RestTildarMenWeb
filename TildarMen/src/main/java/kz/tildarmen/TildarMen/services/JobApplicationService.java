@@ -82,7 +82,7 @@ public class JobApplicationService {
                         <p style="font-size: 14px; color: #666;">
                             You can review their translator profile and resume by logging into your account</p>
                         <br/>
-                        <a href="https://tildarmen.com/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">View Job Request</a>
+                        <a href="https://tildarmen-front.vercel.app/employer/post-projects/project-applicants/23" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">View Job Request</a>
                         <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">
                         <p style="font-size: 12px; color: #999; text-align: center;">
                             TildarMen — Bridging Clients and Professional Translators

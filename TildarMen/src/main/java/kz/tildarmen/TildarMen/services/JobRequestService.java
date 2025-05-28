@@ -76,7 +76,7 @@ public class JobRequestService {
                             Please review the request and respond via your TildarMen dashboard.
                         </p>
                         <br/>
-                        <a href="https://tildarmen.com/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">View Job Request</a>
+                        <a href="https://tildarmen-front.vercel.app/translator/applied-projects" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">View Job Request</a>
                         <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">
                         <p style="font-size: 12px; color: #999; text-align: center;">
                             TildarMen — Bridging Clients and Professional Translators
