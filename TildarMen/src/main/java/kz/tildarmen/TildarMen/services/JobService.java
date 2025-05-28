@@ -114,7 +114,7 @@ public class JobService {
         job.setSpecializations(addSpecializations(specializationMapper.toEntitySet(jobDto.getSpecializations())));
         job.setEmployer(employer);
         notificationService.sendNotification(employer, "Project has been posted!", "Your project " +
-                job.getTitle() + " has been posted. You can check it on the projects catalog",
+                job.getTitle() + " has been posted. You can check it on the projects catalog", null,
                 NotificationType.JOB_POSTED);
         return jobMapper.toDto(jobRepository.save(job));
     }

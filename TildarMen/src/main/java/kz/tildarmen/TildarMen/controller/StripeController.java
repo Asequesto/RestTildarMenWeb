@@ -169,10 +169,11 @@ public class StripeController {
                 notificationService.sendNotification(job.getEmployer(),
                         "Payment Successful.",
                         "Your payment of + " + job.getPrice() + "₸ has been successfully transferred.",
+                        null,
                         NotificationType.PAYMENT_SENT);
                 notificationService.sendNotification(translator, "Payment Received",
                         "You've received a " + job.getPrice() + "₸ payment for the project " +
-                        job.getTitle(), NotificationType.PAYMENT_RECEIVED);
+                        job.getTitle(), job.getEmployer().getProfileImageUrl(), NotificationType.PAYMENT_RECEIVED);
 
                 transactionRepository.save(transaction);
             } else{

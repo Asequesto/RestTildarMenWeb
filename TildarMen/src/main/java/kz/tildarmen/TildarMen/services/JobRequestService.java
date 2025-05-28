@@ -89,7 +89,8 @@ public class JobRequestService {
         emailSenderService.sendEmail(email, subject, message);
         notificationService.sendNotification(translator,"New Project Request Received","Employer "
                 + employer.getFirstName() + " " + employer.getLastName() + " wants to hire you." +
-                " You can respond to him in your profile and chat with him", NotificationType.REQUEST_SEND);
+                " You can respond to him in your profile and chat with him", employer.getProfileImageUrl(),
+                NotificationType.REQUEST_SEND);
 
         return jobRequestMapper.toDto(jobRequestRepository.save(jobRequest));
 
@@ -135,7 +136,7 @@ public class JobRequestService {
         notificationService.sendNotification(jobRequest.getEmployer()
                 ,"You project request has been " + status,"Translator "
                         + user.getFirstName() + " " + user.getLastName() + " has " + status +
-                        " your project request!", NotificationType.REQUEST_RESPONDED);
+                        " your project request!", user.getProfileImageUrl(), NotificationType.REQUEST_RESPONDED);
         jobRequestRepository.save(jobRequest);
     }
 

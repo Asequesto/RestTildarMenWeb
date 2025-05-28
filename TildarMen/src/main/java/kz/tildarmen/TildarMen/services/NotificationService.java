@@ -21,10 +21,11 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
 
-    public void sendNotification(User user, String title, String message, NotificationType type) {
+    public void sendNotification(User user, String title, String message, String profileImage, NotificationType type) {
         Notification notification = new Notification();
         notification.setTitle(title);
         notification.setMessage(message);
+        notification.setProfileImageUrl(profileImage);
         notification.setType(type);
         notification.setUser(user);
         notification.setSendAt(LocalDateTime.now());

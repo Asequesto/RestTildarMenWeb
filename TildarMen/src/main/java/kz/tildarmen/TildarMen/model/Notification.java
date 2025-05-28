@@ -18,6 +18,7 @@ public class Notification {
 
     private String title;
     private String message;
+    private String profileImageUrl;
     private LocalDateTime sendAt;
     private boolean isRead;
 

@@ -55,6 +55,7 @@ public class TranslatorService {
             notificationService.sendNotification(translator, "We're excited to have you on board!",
                     "Start building your profile, showcase your skills," +
                             " and connect with clients looking for expert translators like you.",
+                    null,
                     NotificationType.WELCOME);
             return userMapper.toUserDto(translatorRepository.save(translator));
         }

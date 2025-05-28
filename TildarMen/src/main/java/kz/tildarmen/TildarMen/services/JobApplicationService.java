@@ -95,7 +95,8 @@ public class JobApplicationService {
         emailSenderService.sendEmail(email, subject, message);
         notificationService.sendNotification(job.getEmployer(),"New Project Application Received","Translator "
                 + translator.getFirstName() + " " + translator.getLastName() + " wants to apply to your project." +
-                " You can respond to him in your profile and chat with him", NotificationType.APPLICATION_SEND);
+                " You can respond to him in your profile and chat with him",
+                translator.getProfileImageUrl(), NotificationType.APPLICATION_SEND);
 
         return jobApplicationMapper.toDto(jobApplicationRepository.save(application));
     }
@@ -131,7 +132,7 @@ public class JobApplicationService {
         notificationService.sendNotification(application.getTranslator()
                 ,"You project application has been " + status,"Employer "
                 + user.getFirstName() + " " + user.getLastName() + " has " + status +
-                " your project application!", NotificationType.APPLICATION_RESPONDED);
+                " your project application!", user.getProfileImageUrl(), NotificationType.APPLICATION_RESPONDED);
         application.setStatus(RequestStatus.valueOf(status.toUpperCase()));
     }
 

@@ -54,6 +54,7 @@ public class EmployerService {
             notificationService.sendNotification(employer, "Welcome to TildarMen",
                     "Post your first translation job and connect " +
                             "with top-quality translators ready to help you reach the world.",
+                    null,
                     NotificationType.WELCOME);
             return userMapper.toUserDto(employerRepository.save(employer));
         }
