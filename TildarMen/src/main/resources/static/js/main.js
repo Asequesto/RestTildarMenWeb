@@ -22,7 +22,7 @@ function connect(event) {
     if(nickname && fullname){
         usernamePage.classList.add('hidden');
         chatPage.classList.remove('hidden')
-        const socket = new SockJS('http://localhost:8080/ws')
+        const socket = new SockJS('http://34.42.251.169:8080/ws')
 
         stompClient = Stomp.over(socket);
         stompClient.connect({}, onConnected, onError);
