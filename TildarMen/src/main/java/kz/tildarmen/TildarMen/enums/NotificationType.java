@@ -10,5 +10,6 @@ public enum NotificationType {
     REQUEST_RECEIVED,
     REQUEST_RESPONDED,
     PAYMENT_SENT,
-    PAYMENT_RECEIVED
+    PAYMENT_RECEIVED,
+    RATING_SENT
 }

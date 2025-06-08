@@ -1,6 +1,7 @@
 package kz.tildarmen.TildarMen.services;
 
 import kz.tildarmen.TildarMen.dto.ReviewDto;
+import kz.tildarmen.TildarMen.enums.NotificationType;
 import kz.tildarmen.TildarMen.mapper.ReviewMapper;
 import kz.tildarmen.TildarMen.model.Review;
 import kz.tildarmen.TildarMen.model.Translator;
@@ -23,6 +24,7 @@ public class ReviewService {
     private final ReviewMapper reviewMapper;
     private final UserService userService;
     private final TranslatorRepository translatorRepository;
+    private final NotificationService notificationService;
 
     public Review getReviewById(Long id) {
         return reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
@@ -43,6 +45,10 @@ public class ReviewService {
         review.setCreationDate(LocalDateTime.now());
         review.setRating(request.getRating());
         review.setTranslator(translator);
+        notificationService.sendNotification(translator,
+                "You have received "
+                        + review.getRating() + " star review!! Check it out and see what they had to say!",
+                review.getComment(), translator.getProfileImageUrl(), NotificationType.RATING_SENT);
         translatorRepository.save(translator);
         return reviewMapper.toDto(reviewRepository.save(review));
     }
