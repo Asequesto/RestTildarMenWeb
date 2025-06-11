@@ -47,8 +47,9 @@ public class ReviewService {
         review.setTranslator(translator);
         notificationService.sendNotification(translator,
                 "You have received "
-                        + review.getRating() + " star review!! Check it out and see what they had to say!",
-                review.getComment(), translator.getProfileImageUrl(), NotificationType.RATING_SENT);
+                        + review.getRating() + " star review from " +
+                        user.getFirstName() + " " + user.getLastName() + ". Check it out and see what they had to say!",
+                review.getComment(), user.getProfileImageUrl(), NotificationType.RATING_SENT);
         translatorRepository.save(translator);
         return reviewMapper.toDto(reviewRepository.save(review));
     }
