@@ -107,7 +107,7 @@ public class JobApplicationService {
         Job job = application.getJob();
         authService.checkPermission(userDetails, job.getEmployer().getId());
         String email = application.getTranslator().getEmail();
-        String subject = "Job Application " + jobApplicationId + " got responded";
+        String subject = "You Job Application for " + job.getTitle() + " has been responded";
         String message = """
             <html>
                 <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
