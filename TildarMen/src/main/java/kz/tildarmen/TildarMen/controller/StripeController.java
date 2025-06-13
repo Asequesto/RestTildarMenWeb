@@ -84,7 +84,8 @@ public class StripeController {
     public ResponseEntity<ApiResponse> payment(@PathVariable Long id, @PathVariable Long jobId,
                                                @AuthenticationPrincipal User userDetails) {
         try {
-            authService.checkPermission(userDetails, id);
+            Job job = jobService.getJobById(jobId);
+            authService.checkPermission(userDetails, job.getEmployer().getId());
             return ResponseEntity.ok(new ApiResponse("Success", stripeService.payment(id, jobId)));
         } catch (SecurityException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
