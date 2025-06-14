@@ -99,6 +99,9 @@ public class StripeService {
         Translator translator = translatorService.getTranslatorById(id);
         Job job = jobService.getJobById(jobId);
         StripeAccount stripeAccount = stripeAccountRepository.findByUser(translator);
+        if(stripeAccount == null) {
+            throw new RuntimeException("This translator does not have a stripe account");
+        }
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .addLineItem(
