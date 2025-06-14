@@ -158,8 +158,15 @@ public class UserController {
     public ResponseEntity<ApiResponse> getChats(@AuthenticationPrincipal User user) {
         List<ChatRoom> rooms = chatRoomRepository.findAllBySenderIdOrRecipientId(
                 user.getId().toString(), user.getId().toString());
-        List<Long> userIds = rooms.stream().map
-                (room -> Long.parseLong(room.getSenderId())).distinct().toList();
+        List<Long> userIds = rooms.stream()
+                .filter(room -> !room.getSenderId().equals(room.getRecipientId()))
+                .map(room -> {
+                    String sender = room.getSenderId();
+                    String recipient = room.getRecipientId();
+                    return sender.equals(user.getId().toString()) ? Long.parseLong(recipient) : Long.parseLong(sender);
+                })
+                .distinct()
+                .toList();
         List<User> users = userService.findByIdIn(userIds);
         return ResponseEntity.ok(new ApiResponse("Success", userMapper.toDtoList(users)));
     }
