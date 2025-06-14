@@ -156,7 +156,8 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/chats")
     public ResponseEntity<ApiResponse> getChats(@AuthenticationPrincipal User user) {
-        List<ChatRoom> rooms = chatRoomRepository.findAllBySenderId(user.getId().toString());
+        List<ChatRoom> rooms = chatRoomRepository.findAllBySenderIdOrRecipientId(
+                user.getId().toString(), user.getId().toString());
         List<Long> userIds = rooms.stream().map
                 (room -> Long.parseLong(room.getSenderId())).distinct().toList();
         List<User> users = userService.findByIdIn(userIds);

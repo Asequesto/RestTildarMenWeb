@@ -7,5 +7,5 @@ import java.util.List;
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
     ChatRoom findBySenderIdAndRecipientId(String senderId, String recipientId);
 
-    List<ChatRoom> findAllBySenderId(String senderId);
+    List<ChatRoom> findAllBySenderIdOrRecipientId(String senderId, String recipientId);
 }
