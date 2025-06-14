@@ -172,8 +172,8 @@ public class StripeController {
                 transaction.setPrice(job.getPrice());
 
                 notificationService.sendNotification(job.getEmployer(),
-                        "Payment Successful.",
-                        "Your payment of + " + job.getPrice() + "₸ has been successfully transferred.",
+                        "Payment Successful",
+                        "Your payment of " + job.getPrice() + "₸ has been successfully transferred.",
                         null,
                         NotificationType.PAYMENT_SENT);
                 notificationService.sendNotification(translator, "Payment Received",
