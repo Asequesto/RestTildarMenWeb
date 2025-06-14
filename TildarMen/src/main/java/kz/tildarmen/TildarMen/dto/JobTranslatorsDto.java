@@ -10,6 +10,7 @@ public class JobTranslatorsDto {
 
     private String applicationId;
     private String type;
+    private String translatorId;
     private String firstName;
     private String lastName;
     private String profileImageUrl;

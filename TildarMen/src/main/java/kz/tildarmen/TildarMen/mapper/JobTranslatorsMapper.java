@@ -13,6 +13,7 @@ public interface JobTranslatorsMapper {
 
     @Mapping(source = "translator.firstName", target = "firstName")
     @Mapping(source = "translator.lastName", target = "lastName")
+    @Mapping(source = "translator.id", target = "translatorId")
     @Mapping(source = "translator.rating", target = "rating")
     @Mapping(source = "translator.profileImageUrl", target = "profileImageUrl")
     @Mapping(source = "status", target = "status")
@@ -24,6 +25,7 @@ public interface JobTranslatorsMapper {
 
     @Mapping(source = "translator.firstName", target = "firstName")
     @Mapping(source = "translator.lastName", target = "lastName")
+    @Mapping(source = "translator.id", target = "translatorId")
     @Mapping(source = "translator.rating", target = "rating")
     @Mapping(source = "id", target = "applicationId")
     @Mapping(source = "status", target = "status")
