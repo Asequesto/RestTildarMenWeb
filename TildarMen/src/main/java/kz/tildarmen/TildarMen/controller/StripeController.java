@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
@@ -123,13 +124,16 @@ public class StripeController {
             if (deserializer.getObject().isPresent()) {
                 Account account = (Account) deserializer.getObject().get();
                 if (account.getChargesEnabled() && account.getDetailsSubmitted()) {
-                    System.out.println("Onboarding completed for account: " + account.getId());
-                    StripeAccount stripeAccount = new StripeAccount();
-                    Translator translator = translatorService.
-                            getTranslatorById(Long.valueOf(account.getMetadata().get("translatorId")));
-                    stripeAccount.setUser(translator);
-                    stripeAccount.setStripeId(account.getId());
-                    stripeAccountRepository.save(stripeAccount);
+                    Optional<StripeAccount> existing = stripeAccountRepository.findByStripeId(account.getId());
+                    if (existing.isEmpty()) {
+                        StripeAccount stripeAccount = new StripeAccount();
+                        Translator translator = translatorService.getTranslatorById(
+                                Long.valueOf(account.getMetadata().get("translatorId"))
+                        );
+                        stripeAccount.setUser(translator);
+                        stripeAccount.setStripeId(account.getId());
+                        stripeAccountRepository.save(stripeAccount);
+                    }
                 }
             }
         }
