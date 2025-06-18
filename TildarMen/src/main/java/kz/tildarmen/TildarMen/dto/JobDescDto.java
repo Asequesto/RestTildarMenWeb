@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class JobDescDto {
+public class    JobDescDto {
 
     private Long id;
     private String title;

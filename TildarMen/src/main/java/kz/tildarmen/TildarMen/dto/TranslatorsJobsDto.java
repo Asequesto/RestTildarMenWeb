@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class TranslatorsJobsDto {
 
     private Long applicationId;
+    private Long employerId;
     private String type;
     private RequestStatus status;
     private LocalDateTime appliedAt;
