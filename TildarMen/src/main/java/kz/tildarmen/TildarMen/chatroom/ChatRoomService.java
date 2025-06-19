@@ -48,4 +48,7 @@ public class ChatRoomService {
         chatRoomRepository.deleteAll(rooms);
     }
 
+    public List<ChatRoom> findAllBySenderIdOrRecipientId(String user) {
+        return chatRoomRepository.findAllBySenderIdOrRecipientId(user, user);
+    }
 }
