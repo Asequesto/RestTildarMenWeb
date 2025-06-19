@@ -4,6 +4,8 @@ package kz.tildarmen.TildarMen.chatroom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
@@ -37,6 +39,13 @@ public class ChatRoomService {
 
         return chatId;
 
+    }
+
+    public void deleteAllUserChatRooms(String userId){
+        String regex1 = "^" + userId + "-";
+        String regex2 = "-" + userId + "$";
+        List<ChatRoom> rooms = chatRoomRepository.findUserChatRooms(regex1, regex2);
+        chatRoomRepository.deleteAll(rooms);
     }
 
 }

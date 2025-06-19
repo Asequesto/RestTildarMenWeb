@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.controller;
 
+import kz.tildarmen.TildarMen.chatroom.ChatRoomService;
 import kz.tildarmen.TildarMen.dto.JobApplicationDto;
 import kz.tildarmen.TildarMen.dto.JobDto;
 import kz.tildarmen.TildarMen.dto.JobRequestDto;
@@ -37,6 +38,7 @@ public class EmployerController {
     private final TransactionService transactionService;
     private final GetEmployerProfileMapper getEmployerProfileMapper;
     private final AuthService authService;
+    private final ChatRoomService chatRoomService;
 
     @GetMapping("/{id}/profile")
     public ResponseEntity<ApiResponse> getEmployerProfile(@PathVariable Long id,
@@ -204,6 +206,7 @@ public class EmployerController {
         try {
             authService.checkPermission(userDetails, id);
             employerService.deleteEmployerById(id);
+            chatRoomService.deleteAllUserChatRooms(String.valueOf(id));
             return ResponseEntity.ok(new ApiResponse("Success", "Employer deleted"));
         } catch (SecurityException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)

@@ -1,5 +1,6 @@
 package kz.tildarmen.TildarMen.controller;
 
+import kz.tildarmen.TildarMen.chatroom.ChatRoomService;
 import kz.tildarmen.TildarMen.dto.*;
 import kz.tildarmen.TildarMen.mapper.TranslatorMapper;
 import kz.tildarmen.TildarMen.mapper.TranslatorSettingsMapper;
@@ -37,6 +38,7 @@ public class TranslatorController {
     private final TranslatorSettingsMapper translatorSettingsMapper;
     private final TranslatorRepository translatorRepository;
     private final AuthService authService;
+    private final ChatRoomService chatRoomService;
 
 
     @GetMapping("/{id}/settings")
@@ -565,6 +567,7 @@ public class TranslatorController {
         try {
             authService.checkPermission(userDetails, id);
             translatorService.deleteTranslator(id);
+            chatRoomService.deleteAllUserChatRooms(String.valueOf(id));
             return ResponseEntity.ok(new ApiResponse("Successfully deleted translator", null));
         } catch (SecurityException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
