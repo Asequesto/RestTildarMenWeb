@@ -13,6 +13,6 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
     @Query("{ $or: [ { 'chatId': { $regex: ?0 } }, { 'chatId': { $regex: ?1 } } ] }")
     List<ChatRoom> findUserChatRooms(String senderRegex, String recipientRegex);
 
-    void deleteAll(List<ChatRoom> chatRooms);
+    void deleteAllChatRooms(List<ChatRoom> chatRooms);
 
 }

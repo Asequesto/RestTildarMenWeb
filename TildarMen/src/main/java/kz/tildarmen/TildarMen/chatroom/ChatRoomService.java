@@ -45,7 +45,7 @@ public class ChatRoomService {
         String regex1 = "^" + userId + "-";
         String regex2 = "-" + userId + "$";
         List<ChatRoom> rooms = chatRoomRepository.findUserChatRooms(regex1, regex2);
-        chatRoomRepository.deleteAll(rooms);
+        chatRoomRepository.deleteAllChatRooms(rooms);
     }
 
 }
