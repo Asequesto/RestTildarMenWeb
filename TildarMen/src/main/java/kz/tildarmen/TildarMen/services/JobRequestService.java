@@ -119,7 +119,7 @@ public class JobRequestService {
                         <p style="font-size: 14px; color: #666;">
                             Log in to your dashboard to see more details or take action.
                         </p>
-                        <a href="https://tildarmen-front.vercel.app/employer/applied-project/%s"
+                        <a href="https://tildarmen-front.vercel.app/employer/post-projects/project-applicants/%s"
                            style="display: inline-block; padding: 10px 20px; background-color: #4CAF50;
                                   color: white; text-decoration: none; border-radius: 5px; margin-top: 15px;">
                             View Job Status
